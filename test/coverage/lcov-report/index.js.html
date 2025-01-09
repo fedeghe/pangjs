@@ -1,0 +1,145 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for index.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="index.html">All files</a> index.js</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">95.55% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>43/45</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">84.21% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>32/38</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">96% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>24/25</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>14/14</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
+/*
+PANGjs
+v. 1.0.0
+23:47:7
+Size: ~2.45KB
+*/
+var PANGjs=function(){"use strict";function t(t,e){<span class="missing-if-branch" title="if path not taken" >I</span>if("function"!=typeof t)<span class="cstat-no" title="statement not covered" >throw new Error(e)}</span>function e(t,e){this.states=[t||<span class="branch-1 cbranch-no" title="branch not covered" >{}]</span>,this.unpushedStates=[t||<span class="branch-1 cbranch-no" title="branch not covered" >{}]</span>,this.config=e||<span class="branch-1 cbranch-no" title="branch not covered" >{},</span>
+this.maxElements=this.config.maxElements||!1,this.index=0,this.unpushedIndex=0}function s(t,s,n){this.reducer=t||i,this.initState=s||{},this.config=n||{},this.subscribers=[],
+this.HistoryManager=new e(this.initState,this.config)}var n={REDUCERS_FUNCTION:"[ERROR] Reducer must be a function!",REDUCERS_RETURN:"[ERROR] Reducer should return something!",
+SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",ACTION_TYPE:"[ERROR] Actions needs a type",UNAUTHORIZED_STATECHANGE:"[ERROR] State transition not allowed"};e.prototype.top=function(t){
+return this[t?"unpushedStates":"states"][this[t?"unpushedIndex":"index"]]},e.prototype.commit=function(t,e){var s=this.unpushedStates.slice(0,this.unpushedIndex+1);return s.push(t),
+this.maxElements&amp;&amp;s.length&gt;this.maxElements?s.shift():this.unpushedIndex++,this.unpushedStates=s,e&amp;&amp;this.push(),this},e.prototype.push=function(){this.states=this.unpushedStates,
+this.index=this.unpushedIndex},e.prototype.reset=function(){this.index=0,this.states=this.states.slice(0,1),this.unpushedIndex=0,this.unpushedStates=this.unpushedStates.slice(0,1)};var i=function(){
+return Promise.resolve({})};return s.prototype.getState=function(t){return this.HistoryManager.top(t)},s.prototype.dispatch=function(t,e){if(!("type"in t))return Promise.reject(n.ACTION_TYPE)
+;var s=this,i=t.type,r=t.payload||{},u=this.getState(!0);return this.reducer(u,i,r).then(function(t){return s.HistoryManager.commit(t,e),t})},s.prototype.push=function(){this.HistoryManager.push()
+;var t=this.HistoryManager.top();this.subscribers.forEach(function(e){e(t)})},s.prototype.subscribe=function(e){t(e,n.SUBSCRIBERS_FUNCTION);var s,i=this;return this.subscribers.push(e),
+s=this.subscribers.length-1,<span class="fstat-no" title="function not covered" >fu</span>nction(){<span class="cstat-no" title="statement not covered" >i.subscribers[s]=null}</span>},s.prototype.replaceReducer=function(t){this.reducer=t||<span class="branch-1 cbranch-no" title="branch not covered" >i}</span>,s.prototype.reset=function(){this.HistoryManager.reset(),this.subscribers=[]},{
+ERRORS:n,getStore:function(t,e,n){return new s(t,e,n)},isStore:function(t){return t instanceof s},combine:function(t){return function(e,s,n){e=e||<span class="branch-1 cbranch-no" title="branch not covered" >initState;</span>var i=Object.assign({},e),r=t.length
+;return new Promise(function(e){return t.reduce(function(t,i,u){return t.then(function(t){return r-1===u?e(i(t,s,n)):i(t,s,n)})},Promise.resolve(i))})}}}}()
+;"object"==typeof exports&amp;&amp;(module.exports=PANGjs);</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-01-08T22:52:54.125Z
+            </div>
+        <script src="prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="sorter.js"></script>
+        <script src="block-navigation.js"></script>
+    </body>
+</html>
+    

@@ -1,0 +1,4 @@
+PANGjs
+v. maltaV('PACKAGE.version')
+__TIME__
+Size: __SIZE__
