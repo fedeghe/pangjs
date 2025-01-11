@@ -17,6 +17,11 @@ Store.prototype.getState = function (unpushed) {
     return this.HistoryManager.top(unpushed);
 };
 
+Store.prototype.uncommit = function () {
+    this.HistoryManager.unpushedIndex = this.HistoryManager.index;
+    this.HistoryManager.unpuhedStates =  this.HistoryManager.states;
+};
+
 Store.prototype.commit = function (action, autoPush) {
     if (!('type' in action)) {
         return Promise.reject(ERRORS.ACTION_TYPE);
@@ -39,9 +44,12 @@ Store.prototype.commit = function (action, autoPush) {
 Store.prototype.push = function () {
     this.HistoryManager.push();
     var newState = this.HistoryManager.top();
-    this.subscribers.forEach(function (subscriber) {
+    this.subscribers.filter(function(filter) {
+        return Boolean(filter);
+    }).forEach(function (subscriber) {
         subscriber(newState);
     });
+    return Promise.resolve(newState)
 };
 
 Store.prototype.subscribe = function (subscriber) {

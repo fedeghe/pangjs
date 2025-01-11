@@ -2,8 +2,8 @@
 /*
 PANGjs
 v. 1.0.0
-16:29:49
-Size: ~5.97KB
+22:18:30
+Size: ~6.37KB
 */
 var PANGjs = (function () {
     'use strict';
@@ -32,6 +32,9 @@ var PANGjs = (function () {
     //     if (typeof o === 'undefined') { throw new Error(msg); }
     // }
     
+    function _isAsync(fn) {
+        return fn.constructor.name === "AsyncFunction";
+    }
     /*
     [Malta] HistoryManager.js
     */
@@ -101,6 +104,11 @@ var PANGjs = (function () {
         return this.HistoryManager.top(unpushed);
     };
     
+    Store.prototype.uncommit = function () {
+        this.HistoryManager.unpushedIndex = this.HistoryManager.index;
+        this.HistoryManager.unpuhedStates =  this.HistoryManager.states;
+    };
+    
     Store.prototype.commit = function (action, autoPush) {
         if (!('type' in action)) {
             return Promise.reject(ERRORS.ACTION_TYPE);
@@ -123,9 +131,12 @@ var PANGjs = (function () {
     Store.prototype.push = function () {
         this.HistoryManager.push();
         var newState = this.HistoryManager.top();
-        this.subscribers.forEach(function (subscriber) {
+        this.subscribers.filter(function(filter) {
+            return Boolean(filter);
+        }).forEach(function (subscriber) {
             subscriber(newState);
         });
+        return Promise.resolve(newState)
     };
     
     Store.prototype.subscribe = function (subscriber) {

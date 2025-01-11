@@ -197,6 +197,31 @@ describe('PANGjs - store', () => {
         expect(store.HistoryManager.states.length).toBe(2);
 
     });
+    
+    it('uncommit as expected', async () => {
+        const { getStore } = PANGjs,
+            red = (o, a, p) => {
+                if (a === 'add'){
+                    return Promise.resolve({
+                        n: o.n + p.n
+                    })
+                }
+                return Promise.resolve(o);
+            },
+            init = { n: 69 },
+            conf = {},
+            store = getStore(red, init, conf);
+        // commit & push`
+        await store.commit({ type: 'add', payload: {n : 2} }, true)
+        expect(store.getState()).toMatchObject({ n: 71 });
+        // just commit
+        await store.commit({ type: 'add', payload: {n : 3} });
+        expect(store.getState()).toMatchObject({ n: 71 });
+        expect(store.getState(true)).toMatchObject({ n: 74 });
+        store.uncommit();
+        expect(store.getState()).toMatchObject({ n: 71 });
+        expect(store.getState(true)).toMatchObject({ n: 71 });
+    })
 
     it('store allows subscription', done => {
         const { getStore } = PANGjs,
@@ -306,7 +331,6 @@ describe('PANGjs - store.historyManager', () => {
                 s1 = { a:1, b: 2},
                 s2 = { a:2, b: 4},
                 s3 = { a:3, b: 5};
-// console.log({hm});
             const ss0 = hm.top();
             expect(ss0).toMatchObject(init);
             hm.commit(s1).push();

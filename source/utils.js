@@ -6,3 +6,7 @@ function _isFunction (o, msg) {
 // function _isDefined (o, msg) {
 //     if (typeof o === 'undefined') { throw new Error(msg); }
 // }
+
+function _isAsync(fn) {
+    return fn.constructor.name === "AsyncFunction";
+}

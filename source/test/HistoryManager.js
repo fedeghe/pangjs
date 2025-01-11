@@ -82,7 +82,6 @@ describe('PANGjs - store.historyManager', () => {
                 s1 = { a:1, b: 2},
                 s2 = { a:2, b: 4},
                 s3 = { a:3, b: 5};
-// console.log({hm});
             const ss0 = hm.top();
             expect(ss0).toMatchObject(init);
             hm.commit(s1).push();
