@@ -17,7 +17,7 @@ Store.prototype.getState = function (unpushed) {
     return this.HistoryManager.top(unpushed);
 };
 
-Store.prototype.dispatch = function (action, autoPush) {
+Store.prototype.commit = function (action, autoPush) {
     if (!('type' in action)) {
         return Promise.reject(ERRORS.ACTION_TYPE);
     }

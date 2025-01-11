@@ -15,7 +15,7 @@ describe(`PANGjs - init`, () => {
 
         expect(PANGjs.isStore(store)).toBeTruthy();
         expect(typeof store.getState).toBe('function');
-        expect(typeof store.dispatch).toBe('function');
+        expect(typeof store.commit).toBe('function');
         expect(store.reducer).toBe(red);
         expect(store.initState).toMatchObject({});
         expect(store.config).toMatchObject({});

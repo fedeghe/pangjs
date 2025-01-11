@@ -4,7 +4,7 @@ describe('PANGjs throw all expected exceptions', () => {
         const { getStore } = PANGjs,
             red = () => Promise.resolve({}),
             store = getStore(red);
-        store.dispatch({}).catch(e => {
+        store.commit({}).catch(e => {
             expect(e).toBe('[ERROR] Actions needs a type')
             done()
         })
@@ -16,7 +16,7 @@ describe('PANGjs throw all expected exceptions', () => {
                     ? Promise.resolve({})
                     : Promise.reject('no action found'),
             store = getStore(red);
-        store.dispatch({type:'MULT'}).catch(e => {
+        store.commit({type:'MULT'}).catch(e => {
             expect(e).toBe('no action found')
             done()
         })

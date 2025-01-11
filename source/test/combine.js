@@ -41,12 +41,12 @@ describe('PANGjs - combine', () => {
             store = getStore(combined, { number: 0 }),
             t0 = performance.now();
         
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { num: 7 }
         })
         
-        await store.dispatch({
+        await store.commit({
             type: 'subtract',
             payload: { num: 2 }
         })

@@ -20,7 +20,7 @@ describe(`PANGjs - init`, () => {
 
         expect(PANGjs.isStore(store)).toBeTruthy();
         expect(typeof store.getState).toBe('function');
-        expect(typeof store.dispatch).toBe('function');
+        expect(typeof store.commit).toBe('function');
         expect(store.reducer).toBe(red);
         expect(store.initState).toMatchObject({});
         expect(store.config).toMatchObject({});
@@ -69,8 +69,8 @@ describe('PANGjs - store', () => {
             store = getStore(reducer, { number: 0 }),
             t0 = performance.now();
 
-        await store.dispatch({type: 'add'})
-        await store.dispatch({type: 'subtract'}, true)
+        await store.commit({type: 'add'})
+        await store.commit({type: 'subtract'}, true)
         expect(typeof getStore).toBe('function');
         t1 = performance.now();
         expect(t1-t0 > 2*delay).toBe(true);
@@ -79,7 +79,7 @@ describe('PANGjs - store', () => {
     it('default values', async () => {
         const { getStore } = PANGjs,
             store = getStore();
-        await store.dispatch({ type: 'whatever' });
+        await store.commit({ type: 'whatever' });
         expect(store.getState()).toMatchObject({});
     });
 
@@ -95,7 +95,7 @@ describe('PANGjs - store', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { n: 2 }
         }, true)
@@ -126,7 +126,7 @@ describe('PANGjs - store', () => {
             },
             store = getStore(red, {n:0});
 
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { n: 5 }
         }, true)
@@ -134,7 +134,7 @@ describe('PANGjs - store', () => {
         expect(store.getState()).toMatchObject({ n: 5 });
         
         store.replaceReducer(red2)
-        await store.dispatch({
+        await store.commit({
             type: 'sub',
             payload: { n: 2 }
         },true)    
@@ -153,11 +153,11 @@ describe('PANGjs - store', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { n: 2 }
         }, true)
-        await store.dispatch({
+        await store.commit({
                 type: 'add',
                 payload: { n: 3 }
         }, true)
@@ -176,12 +176,12 @@ describe('PANGjs - store', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { n: 2 }
         })
         
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { n: 3 }
         }, true);
@@ -189,7 +189,7 @@ describe('PANGjs - store', () => {
         store.move(-2);
         expect(store.HistoryManager.states.length).toBe(3);
         expect(store.getState()).toMatchObject({ n: 0 });
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { n: 9 }
         }, true);
@@ -213,9 +213,9 @@ describe('PANGjs - store', () => {
             store = getStore(red, init, conf);
         
         store.subscribe(() => done());
-        store.dispatch({ type: 'add', payload: {n : 2} })
-            .then((o) => store.dispatch({ type: 'aaa' }))
-            .then((o) => store.dispatch({ type: 'bbb' }))
+        store.commit({ type: 'add', payload: {n : 2} })
+            .then((o) => store.commit({ type: 'aaa' }))
+            .then((o) => store.commit({ type: 'bbb' }))
             .then((o) => store.push());
     }); 
 });;
@@ -337,7 +337,7 @@ describe('PANGjs throw all expected exceptions', () => {
         const { getStore } = PANGjs,
             red = () => Promise.resolve({}),
             store = getStore(red);
-        store.dispatch({}).catch(e => {
+        store.commit({}).catch(e => {
             expect(e).toBe('[ERROR] Actions needs a type')
             done()
         })
@@ -349,7 +349,7 @@ describe('PANGjs throw all expected exceptions', () => {
                     ? Promise.resolve({})
                     : Promise.reject('no action found'),
             store = getStore(red);
-        store.dispatch({type:'MULT'}).catch(e => {
+        store.commit({type:'MULT'}).catch(e => {
             expect(e).toBe('no action found')
             done()
         })
@@ -401,12 +401,12 @@ describe('PANGjs - combine', () => {
             store = getStore(combined, { number: 0 }),
             t0 = performance.now();
         
-        await store.dispatch({
+        await store.commit({
             type: 'add',
             payload: { num: 7 }
         })
         
-        await store.dispatch({
+        await store.commit({
             type: 'subtract',
             payload: { num: 2 }
         })

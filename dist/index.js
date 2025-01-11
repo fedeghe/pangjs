@@ -2,7 +2,7 @@
 /*
 PANGjs
 v. 1.0.0
-10:7:49
+16:29:49
 Size: ~5.97KB
 */
 var PANGjs = (function () {
@@ -101,7 +101,7 @@ var PANGjs = (function () {
         return this.HistoryManager.top(unpushed);
     };
     
-    Store.prototype.dispatch = function (action, autoPush) {
+    Store.prototype.commit = function (action, autoPush) {
         if (!('type' in action)) {
             return Promise.reject(ERRORS.ACTION_TYPE);
         }
