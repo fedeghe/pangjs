@@ -104,7 +104,7 @@ describe('PANGjs - store', () => {
         expect(store.getState()).toMatchObject({ n: 3 }); 
     });
 
-    it('subscribers are working as expected', done => {
+    it('autopush is working as expected', async () => {
         const { getStore } = PANGjs,
             red = (oldState, actionType, payload) => {
                 if(actionType==='add'){
@@ -116,20 +116,69 @@ describe('PANGjs - store', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        store.subscribe(newState => {
-            if (newState.n === 5) done()
-        });
-        store.dispatch({
+        await store.dispatch({
             type: 'add',
             payload: { n: 2 }
-        }).then(() => {
-
-            store.dispatch({
+        }, true)
+        await store.dispatch({
                 type: 'add',
                 payload: { n: 3 }
-            })
-        }).then(() => {
-            store.push();
-        });
+        }, true)
+        const s = store.getState();
+        expect(s.n).toBe(5)
     });
+    it('move works as expected', async () => {
+        const { getStore } = PANGjs,
+            red = (oldState, actionType, payload) => {
+                if(actionType==='add'){
+                    return Promise.resolve({
+                        ...oldState,
+                        n: oldState.n + (payload.n || 1)
+                    })
+                }
+                return Promise.resolve(oldState)
+            },
+            store = getStore(red, {n:0});
+        await store.dispatch({
+            type: 'add',
+            payload: { n: 2 }
+        })
+        
+        await store.dispatch({
+            type: 'add',
+            payload: { n: 3 }
+        }, true);
+        expect(store.HistoryManager.states.length).toBe(3);
+        store.move(-2);
+        expect(store.HistoryManager.states.length).toBe(3);
+        expect(store.getState()).toMatchObject({ n: 0 });
+        await store.dispatch({
+            type: 'add',
+            payload: { n: 9 }
+        }, true);
+        expect(store.getState()).toMatchObject({ n: 9 });
+        expect(store.HistoryManager.states.length).toBe(2);
+
+    });
+
+    it('store allows subscription', done => {
+        const { getStore } = PANGjs,
+            red = (o, a, p) => {
+                if (a === 'add'){
+                    return Promise.resolve({
+                        n: o.n + p.n
+                    })
+                }
+                return Promise.resolve(o);
+            },
+            init = { n: 69 },
+            conf = {},
+            store = getStore(red, init, conf);
+        
+        store.subscribe(() => done());
+        store.dispatch({ type: 'add', payload: {n : 2} })
+            .then((o) => store.dispatch({ type: 'aaa' }))
+            .then((o) => store.dispatch({ type: 'bbb' }))
+            .then((o) => store.push());
+    }); 
 });

@@ -57,6 +57,21 @@ Store.prototype.subscribe = function (subscriber) {
     };
 };
 
+Store.prototype.move = function (to) {
+    if (
+        this.HistoryManager.index !== this.HistoryManager.unpushedIndex
+        || typeof to === 'undefined'
+        || to === 0
+    ) return this;
+    var tmpIndex = this.HistoryManager.index + to,
+        willChange = tmpIndex > -1 && tmpIndex < this.HistoryManager.states.length,
+        newIndex = willChange ? tmpIndex : this.currentIndex;
+
+    this.HistoryManager.index = newIndex;
+    this.HistoryManager.unpushedIndex = newIndex;
+    return this;
+};
+
 Store.prototype.replaceReducer = function (reducer) {
     this.reducer = reducer || defaultReducer;
 };

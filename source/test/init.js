@@ -24,5 +24,5 @@ describe(`PANGjs - init`, () => {
         expect(storeInitialized.initState).toMatchObject(init);
         expect(storeInitialized.config).toMatchObject(conf);
         expect(storeInitialized.subscribers).toMatchObject([]);
-    }); 
+    });
 });
