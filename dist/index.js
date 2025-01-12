@@ -2,7 +2,7 @@
 /*
 PANGjs
 v. 1.0.0
-22:18:30
+12:22:7
 Size: ~6.37KB
 */
 var PANGjs = (function () {
@@ -136,7 +136,7 @@ var PANGjs = (function () {
         }).forEach(function (subscriber) {
             subscriber(newState);
         });
-        return Promise.resolve(newState)
+        return Promise.resolve(newState);
     };
     
     Store.prototype.subscribe = function (subscriber) {

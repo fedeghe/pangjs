@@ -1,5 +1,8 @@
 {
-    "EXE": "mkdir -p test dist",
+    "EXE": [
+        "mkdir -p test dist",
+        "cp source/pangjs.png ."
+    ],
     "source/test/index.test.js": "test -options=placeholderMode:\"func\"",
     "source/index.js": "dist -plugins=malta-header-comment[name:\"source/header.txt\"] -options=placeholderMode:\"func\"",
     "source/*.md": "."

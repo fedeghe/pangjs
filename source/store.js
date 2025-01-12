@@ -49,7 +49,7 @@ Store.prototype.push = function () {
     }).forEach(function (subscriber) {
         subscriber(newState);
     });
-    return Promise.resolve(newState)
+    return Promise.resolve(newState);
 };
 
 Store.prototype.subscribe = function (subscriber) {
