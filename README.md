@@ -28,25 +28,41 @@ now it's time to get a store and use it:
 
 
 ``` js
-const store = PANGjs.getStore( reducer, initState );
+const store = PANGjs.getStore(
+    reducer,
+    initState
+);
+
 // commit, change it only internally
-store.commit({type: 'ADD', payload: { number: 4 }})
-    .then(s => console.log('here we get the unpushed state:', s));
+store.commit({
+        type: 'ADD',
+        payload: { number: 4 }
+    })
+    .then(s => console.log(
+        'here we get the unpushed state:', s
+    ));
+
 // to push the changes to be effective we have to push
 store.push()
-    .then(s => console.log('here we get the pushed state (nothing unpushed):', s));
+    // here we get the pushed state
+    .then(console.log);
 ```
 alternatively one single call just adding `true` as second parameter (semantically is 'autocommit'): 
 ``` js
-store.commit(
-    {type: 'ADD', payload: { number: 4 }},
-    true
-).then(s => console.log('here we get autopushed state:', s));
+store.commit({
+        type: 'ADD',
+        payload: { number: 4 }},
+        true // autoCommit changes
+    )
+    // here we get autopushed state
+    .then(console.log);
 ```
 
-## API  
+---
 
-## PANGjs.getStore(reducer, initialState) -> store
+# API
+
+### `PANGjs.getStore(reducer, initialState, config) -> store`
 
 **Parameters**: 
 - `reducer`:  
@@ -59,14 +75,51 @@ store.commit(
 - `initialState`:  
     optional object representing the initial state needed; when not provided it will be just an empty object.
 
+- `config`:  this is an optional object allowing to change some default behaviors:
+    - maxElements (default 1): 
+        by default no history is available, but if here we pass a number bigger than one, for example 5 then we can navigate the state back up to 5 steps using the `move` function to the store.
+    - check (default no check):
+        here we can pass a function expected to have to following signature:
+        ```
+        (
+            state, 
+            currentAction,
+            previousAction,
+            payload
+        ) -> <Boolean>
+        ```
+        allowing to prevent a state change under some circumstances; that decision can be made based on the `state`, the ongoing `currentAction` which we might block, the `previousAction` and the current `payload`. To allow the change just return `true`, to block it return `false` instead.
+
 **Returns**:  
 the `store` instance  
 
 **Throws**:  
-"[ERROR] Reducer should return something!" in case the passed reducer is not a function
+`[ERROR] Reducer should return something!` in case the passed reducer is not a function
 
-## PANGjs.isStore(something)
+---
+
+### `PANGjs.combine([reducer, ...])`
+
+**Parameters**:
+- **[reducer, ...]**:
+    two or more reducers to be combined
+
+**Returns**:  
+the resulting combined reducer
+
+**Throws**:  
+`[ERROR] Reducer must be a function!` in case one of the parameters is not a function  
+
+---
+
+### `PANGjs.isStore(toBeChecked)`
 
 Parameters: 
-- **something**:
+- **toBeChecked**:
     what needs to be checked if it is a PANGjs store or not
+
+---
+
+# store API
+
+Every store obtained invoking successfully `PANGjs.getStore` exposes the following

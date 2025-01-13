@@ -3,6 +3,10 @@ function HistoryManager (initState, config) {
     this.unpushedStates = [initState || {}];
     this.config = config || {};
     this.maxElements = this.config.maxElements || false;
+    this.maxElements = Math.max(
+        0,
+        parseInt(this.config.maxElements, 0)
+    ) || false;
     this.index = 0;
     this.unpushedIndex = 0;
 }

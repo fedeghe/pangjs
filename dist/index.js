@@ -2,15 +2,16 @@
 /*
 PANGjs
 v. 1.0.0
-20:26:4
-Size: ~3.48KB
+22:14:5
+Size: ~3.63KB
 */
 var PANGjs=function(){"use strict";function t(t,e){if("function"!=typeof t)throw new Error(e)}function e(t,e){if("Promise"!==t.constructor.name)throw new Error(e)}function s(t,e){
-if("number"!=typeof t)throw new Error(e)}function n(t,e){this.states=[t||{}],this.unpushedStates=[t||{}],this.config=e||{},this.maxElements=this.config.maxElements||!1,this.index=0,
-this.unpushedIndex=0}function i(e,s,i){this.reducer=e||o,t(this.reducer,r.REDUCERS_FUNCTION),this.initState=s||{},this.config=i||{},this.config.check=this.config.check||function(){return!0},
-this.subscribers=[],this.previousAction="ORIGIN",this.HistoryManager=new n(this.initState,this.config)}var r={REDUCERS_FUNCTION:"[ERROR] Reducer must be a function!",
-REDUCERS_RETURN:"[ERROR] Reducer should return a promise!",REDUCERS_ASYNC:"[ERROR] Reducer should be asynchronous!",SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",
-ACTION_TYPE:"[ERROR] Actions needs a type",UNAUTHORIZED_STATECHANGE:"[ERROR] State transition not allowed",MOVE_TO_NUMBER:"[ERROR] Move requires a number"};n.prototype.top=function(t){
+if("number"!=typeof t)throw new Error(e)}function n(t,e){this.states=[t||{}],this.unpushedStates=[t||{}],this.config=e||{},this.maxElements=this.config.maxElements||!1,
+this.maxElements=Math.max(0,parseInt(this.config.maxElements,0))||!1,this.index=0,this.unpushedIndex=0}function i(e,s,i){this.reducer=e||o,t(this.reducer,r.REDUCERS_FUNCTION),this.initState=s||{},
+this.config=i||{},this.config.check=this.config.check||function(){return!0},t(this.config.check,r.REDUCERS_FUNCTION),this.subscribers=[],this.previousAction="ORIGIN",
+this.HistoryManager=new n(this.initState,this.config)}var r={REDUCERS_FUNCTION:"[ERROR] Reducer must be a function!",REDUCERS_RETURN:"[ERROR] Reducer should return a promise!",
+REDUCERS_ASYNC:"[ERROR] Reducer should be asynchronous!",SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",ACTION_TYPE:"[ERROR] Actions needs a type",
+UNAUTHORIZED_STATECHANGE:"[ERROR] State transition not allowed",MOVE_TO_NUMBER:"[ERROR] Move requires a number"};n.prototype.top=function(t){
 return this[t?"unpushedStates":"states"][this[t?"unpushedIndex":"index"]]},n.prototype.commit=function(t,e){var s=this.unpushedStates.slice(0,this.unpushedIndex+1);return s.push(t),
 this.maxElements&&s.length>this.maxElements?s.shift():this.unpushedIndex++,this.unpushedStates=s,e&&this.push(),this},n.prototype.push=function(){this.states=this.unpushedStates,
 this.index=this.unpushedIndex},n.prototype.reset=function(){this.index=0,this.states=this.states.slice(0,1),this.unpushedIndex=0,this.unpushedStates=this.unpushedStates.slice(0,1)};var o=function(){
@@ -22,6 +23,6 @@ this.HistoryManager.unpuhedStates=this.HistoryManager.states},i.prototype.commit
 ;return this.subscribers.push(e),s=this.subscribers.length-1,function(){n.subscribers[s]=null}},i.prototype.move=function(t){if(s(t,r.MOVE_TO_NUMBER),
 this.HistoryManager.index!==this.HistoryManager.unpushedIndex||void 0===t||0===t)return this;var e=this.HistoryManager.index+t,n=e>-1&&e<this.HistoryManager.states.length,i=n?e:this.currentIndex
 ;return this.HistoryManager.index=i,this.HistoryManager.unpushedIndex=i,this},i.prototype.replaceReducer=function(t){this.reducer=t||o},i.prototype.reset=function(){this.HistoryManager.reset(),
-this.subscribers=[]},{ERRORS:r,getStore:function(t,e,s){return new i(t,e,s)},isStore:function(t){return t instanceof i},combine:function(t){return function(e,s,n){e=e||initState
-;var i=Object.assign({},e),r=t.length;return new Promise(function(e){return t.reduce(function(t,i,o){return t.then(function(t){return r-1===o?e(i(t,s,n)):i(t,s,n)})},Promise.resolve(i))})}}}}()
-;"object"==typeof exports&&(module.exports=PANGjs);
+this.subscribers=[]},{ERRORS:r,getStore:function(t,e,s){return new i(t,e,s)},isStore:function(t){return t instanceof i},combine:function(e){return e.forEach(function(e){t(e,r.REDUCERS_FUNCTION)}),
+function(t,s,n){t=t||initState;var i=Object.assign({},t),r=e.length;return new Promise(function(t){return e.reduce(function(e,i,o){return e.then(function(e){return r-1===o?t(i(e,s,n)):i(e,s,n)})
+},Promise.resolve(i))})}}}}();"object"==typeof exports&&(module.exports=PANGjs);

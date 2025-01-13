@@ -15,6 +15,9 @@ var PANGjs = (function () {
             return s instanceof Store;
         },
         combine: function (reducers) {
+            reducers.forEach(function (reducer){
+                _isFunction(reducer, ERRORS.REDUCERS_FUNCTION);
+            })
             return function (currentState, actionType, payload) {
                 currentState = currentState || initState;
                 var newState = Object.assign({}, currentState),

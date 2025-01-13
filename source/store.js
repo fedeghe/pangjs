@@ -9,6 +9,7 @@ function Store(reducer, initState, config) {
     this.initState = initState || {};
     this.config = config || {};
     this.config.check = this.config.check || function (){return true};
+    _isFunction(this.config.check, ERRORS.REDUCERS_FUNCTION);
     this.subscribers = [];
     this.previousAction = 'ORIGIN';
     this.HistoryManager = new HistoryManager(
