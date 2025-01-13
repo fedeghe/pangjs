@@ -2,212 +2,26 @@
 /*
 PANGjs
 v. 1.0.0
-12:22:7
-Size: ~6.37KB
+20:26:4
+Size: ~3.48KB
 */
-var PANGjs = (function () {
-    'use strict';
-
-    /*
-    [Malta] errors.js
-    */
-    /* eslint-disable no-unused-vars */
-    var ERRORS = {
-        REDUCERS_FUNCTION: '[ERROR] Reducer must be a function!',
-        REDUCERS_RETURN: '[ERROR] Reducer should return something!',
-        SUBSCRIBERS_FUNCTION: '[ERROR] Subscribers must be a functions!',
-        ACTION_TYPE: '[ERROR] Actions needs a type',
-        UNAUTHORIZED_STATECHANGE: '[ERROR] State transition not allowed'
-    };
-    
-    /*
-    [Malta] utils.js
-    */
-    /* eslint-disable no-unused-vars */
-    function _isFunction (o, msg) {
-        if (typeof o !== 'function') { throw new Error(msg); }
-    }
-    
-    // function _isDefined (o, msg) {
-    //     if (typeof o === 'undefined') { throw new Error(msg); }
-    // }
-    
-    function _isAsync(fn) {
-        return fn.constructor.name === "AsyncFunction";
-    }
-    /*
-    [Malta] HistoryManager.js
-    */
-    function HistoryManager (initState, config) {
-        this.states = [initState || {}];
-        this.unpushedStates = [initState || {}];
-        this.config = config || {};
-        this.maxElements = this.config.maxElements || false;
-        this.index = 0;
-        this.unpushedIndex = 0;
-    }
-    
-    HistoryManager.prototype.top = function (unpushed) {
-        return this[unpushed ? 'unpushedStates' : 'states'][
-            this[unpushed ? 'unpushedIndex': 'index']
-        ];
-    }
-    
-    HistoryManager.prototype.commit = function(state, autoPush) {
-        var newStates = this.unpushedStates.slice(
-            0,
-            this.unpushedIndex + 1
-        );
-        newStates.push(state);
-        
-        if (this.maxElements && newStates.length > this.maxElements) {
-            newStates.shift();
-        } else {
-            this.unpushedIndex++;
-        }
-        this.unpushedStates = newStates;
-        if (autoPush) this.push();
-        return this;
-    }
-    
-    
-    HistoryManager.prototype.push = function () {
-        this.states = this.unpushedStates;
-        this.index = this.unpushedIndex;
-    }
-    
-    HistoryManager.prototype.reset = function () {
-        this.index = 0;
-        this.states = this.states.slice(0, 1);
-        this.unpushedIndex = 0;
-        this.unpushedStates = this.unpushedStates.slice(0, 1);
-    }
-    /*
-    [Malta] store.js
-    */
-    var defaultReducer = function(){
-        return Promise.resolve({})
-    };
-    
-    function Store(reducer, initState, config) {
-        this.reducer = reducer || defaultReducer;
-        this.initState = initState || {};
-        this.config = config || {};
-        this.subscribers = [];
-        this.HistoryManager = new HistoryManager(
-            this.initState,
-            this.config
-        );
-    };
-    
-    Store.prototype.getState = function (unpushed) {
-        return this.HistoryManager.top(unpushed);
-    };
-    
-    Store.prototype.uncommit = function () {
-        this.HistoryManager.unpushedIndex = this.HistoryManager.index;
-        this.HistoryManager.unpuhedStates =  this.HistoryManager.states;
-    };
-    
-    Store.prototype.commit = function (action, autoPush) {
-        if (!('type' in action)) {
-            return Promise.reject(ERRORS.ACTION_TYPE);
-        }
-        var self = this,
-            actionType = action.type,
-            payload = action.payload || {},
-            currentState = this.getState(true);
-            
-        return this.reducer(
-            currentState,
-            actionType,
-            payload
-        ).then(function (newState){
-            self.HistoryManager.commit(newState, autoPush)
-            return newState;
-        });
-    };
-    
-    Store.prototype.push = function () {
-        this.HistoryManager.push();
-        var newState = this.HistoryManager.top();
-        this.subscribers.filter(function(filter) {
-            return Boolean(filter);
-        }).forEach(function (subscriber) {
-            subscriber(newState);
-        });
-        return Promise.resolve(newState);
-    };
-    
-    Store.prototype.subscribe = function (subscriber) {
-        _isFunction(subscriber, ERRORS.SUBSCRIBERS_FUNCTION);
-        var self = this,
-            p;
-        this.subscribers.push(subscriber);
-        p = this.subscribers.length - 1;
-    
-        // unsubcriber
-        return function () {
-            self.subscribers[p] = null;
-        };
-    };
-    
-    Store.prototype.move = function (to) {
-        if (
-            this.HistoryManager.index !== this.HistoryManager.unpushedIndex
-            || typeof to === 'undefined'
-            || to === 0
-        ) return this;
-        var tmpIndex = this.HistoryManager.index + to,
-            willChange = tmpIndex > -1 && tmpIndex < this.HistoryManager.states.length,
-            newIndex = willChange ? tmpIndex : this.currentIndex;
-    
-        this.HistoryManager.index = newIndex;
-        this.HistoryManager.unpushedIndex = newIndex;
-        return this;
-    };
-    
-    Store.prototype.replaceReducer = function (reducer) {
-        this.reducer = reducer || defaultReducer;
-    };
-    
-    Store.prototype.reset = function () {
-        this.HistoryManager.reset();
-        this.subscribers = [];
-    };
-
-    return {
-        ERRORS: ERRORS,
-        getStore: function (reducer, initState, config) {
-            return new Store(reducer, initState, config);
-        },
-        isStore: function (s) {
-            return s instanceof Store;
-        },
-        combine: function (reducers) {
-            return function (currentState, actionType, payload) {
-                currentState = currentState || initState;
-                var newState = Object.assign({}, currentState),
-                    rlen = reducers.length;
-
-                return new Promise(function (resolve) {
-                    
-                    return reducers.reduce(function (acc, red, i) {
-                        return acc.then(function (r) {
-                            // console.log({ r: r, actionType: actionType });
-                            if(rlen - 1 === i){
-                                return resolve(
-                                    red(r, actionType, payload)
-                                );
-                            } else{
-                                return red(r, actionType, payload);
-                            }
-                        });
-                    }, Promise.resolve(newState));
-                });
-            };
-        }
-    };
-})();
-
-(typeof exports === 'object') && (module.exports = PANGjs);
+var PANGjs=function(){"use strict";function t(t,e){if("function"!=typeof t)throw new Error(e)}function e(t,e){if("Promise"!==t.constructor.name)throw new Error(e)}function s(t,e){
+if("number"!=typeof t)throw new Error(e)}function n(t,e){this.states=[t||{}],this.unpushedStates=[t||{}],this.config=e||{},this.maxElements=this.config.maxElements||!1,this.index=0,
+this.unpushedIndex=0}function i(e,s,i){this.reducer=e||o,t(this.reducer,r.REDUCERS_FUNCTION),this.initState=s||{},this.config=i||{},this.config.check=this.config.check||function(){return!0},
+this.subscribers=[],this.previousAction="ORIGIN",this.HistoryManager=new n(this.initState,this.config)}var r={REDUCERS_FUNCTION:"[ERROR] Reducer must be a function!",
+REDUCERS_RETURN:"[ERROR] Reducer should return a promise!",REDUCERS_ASYNC:"[ERROR] Reducer should be asynchronous!",SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",
+ACTION_TYPE:"[ERROR] Actions needs a type",UNAUTHORIZED_STATECHANGE:"[ERROR] State transition not allowed",MOVE_TO_NUMBER:"[ERROR] Move requires a number"};n.prototype.top=function(t){
+return this[t?"unpushedStates":"states"][this[t?"unpushedIndex":"index"]]},n.prototype.commit=function(t,e){var s=this.unpushedStates.slice(0,this.unpushedIndex+1);return s.push(t),
+this.maxElements&&s.length>this.maxElements?s.shift():this.unpushedIndex++,this.unpushedStates=s,e&&this.push(),this},n.prototype.push=function(){this.states=this.unpushedStates,
+this.index=this.unpushedIndex},n.prototype.reset=function(){this.index=0,this.states=this.states.slice(0,1),this.unpushedIndex=0,this.unpushedStates=this.unpushedStates.slice(0,1)};var o=function(){
+return Promise.resolve({})};return i.prototype.getState=function(t){return this.HistoryManager.top(t)},i.prototype.uncommit=function(){this.HistoryManager.unpushedIndex=this.HistoryManager.index,
+this.HistoryManager.unpuhedStates=this.HistoryManager.states},i.prototype.commit=function(t,s){if(!("type"in t))return Promise.reject(r.ACTION_TYPE)
+;var n=this,i=t.type,o=t.payload||{},u=this.getState(!0);if(!n.config.check(u,n.previousAction,i,o))return Promise.reject(r.UNAUTHORIZED_STATECHANGE);var h=this.reducer(u,i,o)
+;return e(h,r.REDUCERS_RETURN),this.previousAction=i,h.then(function(t){return n.HistoryManager.commit(t,s),t})},i.prototype.push=function(){this.HistoryManager.push();var t=this.HistoryManager.top()
+;return this.subscribers.filter(function(t){return Boolean(t)}).forEach(function(e){e(t)}),Promise.resolve(t)},i.prototype.subscribe=function(e){t(e,r.SUBSCRIBERS_FUNCTION);var s,n=this
+;return this.subscribers.push(e),s=this.subscribers.length-1,function(){n.subscribers[s]=null}},i.prototype.move=function(t){if(s(t,r.MOVE_TO_NUMBER),
+this.HistoryManager.index!==this.HistoryManager.unpushedIndex||void 0===t||0===t)return this;var e=this.HistoryManager.index+t,n=e>-1&&e<this.HistoryManager.states.length,i=n?e:this.currentIndex
+;return this.HistoryManager.index=i,this.HistoryManager.unpushedIndex=i,this},i.prototype.replaceReducer=function(t){this.reducer=t||o},i.prototype.reset=function(){this.HistoryManager.reset(),
+this.subscribers=[]},{ERRORS:r,getStore:function(t,e,s){return new i(t,e,s)},isStore:function(t){return t instanceof i},combine:function(t){return function(e,s,n){e=e||initState
+;var i=Object.assign({},e),r=t.length;return new Promise(function(e){return t.reduce(function(t,i,o){return t.then(function(t){return r-1===o?e(i(t,s,n)):i(t,s,n)})},Promise.resolve(i))})}}}}()
+;"object"==typeof exports&&(module.exports=PANGjs);

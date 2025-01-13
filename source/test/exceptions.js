@@ -12,13 +12,23 @@ describe('PANGjs throw all expected exceptions', () => {
     
     it('action not found', done => {
         const { getStore } = PANGjs,
-            red = ({type}) => ['ADD', 'SUB'].includes(type)
+            red = (oldS, type) => ['ADD', 'SUB'].includes(type)
                     ? Promise.resolve({})
                     : Promise.reject('no action found'),
             store = getStore(red);
+        
         store.commit({type:'MULT'}).catch(e => {
             expect(e).toBe('no action found')
             done()
         })
+    });
+    it('reducer does not return a promise', () => {
+        const { getStore } = PANGjs,
+            red = (oldState, type) => ['ADD', 'SUB'].includes(type),
+            store = getStore(red);
+
+            expect(() => {
+                store.commit({type:'MULT'})
+            }).toThrow('[ERROR] Reducer should return a promise!')
     });
 });

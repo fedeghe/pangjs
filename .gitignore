@@ -1,3 +1,5 @@
 node_modules
 *buildNum.json
 .printVersion
+testx.js
+logo.html

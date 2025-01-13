@@ -4,9 +4,13 @@ var defaultReducer = function(){
 
 function Store(reducer, initState, config) {
     this.reducer = reducer || defaultReducer;
+    _isFunction(this.reducer, ERRORS.REDUCERS_FUNCTION);
+    // _isAsync(this.reducer, ERRORS.REDUCERS_ASYNC);
     this.initState = initState || {};
     this.config = config || {};
+    this.config.check = this.config.check || function (){return true};
     this.subscribers = [];
+    this.previousAction = 'ORIGIN';
     this.HistoryManager = new HistoryManager(
         this.initState,
         this.config
@@ -26,16 +30,27 @@ Store.prototype.commit = function (action, autoPush) {
     if (!('type' in action)) {
         return Promise.reject(ERRORS.ACTION_TYPE);
     }
+
     var self = this,
         actionType = action.type,
         payload = action.payload || {},
         currentState = this.getState(true);
-        
-    return this.reducer(
+    if (!self.config.check(
+        currentState,
+        self.previousAction,
+        actionType,
+        payload
+    )) {
+        return Promise.reject(ERRORS.UNAUTHORIZED_STATECHANGE);
+    }
+    var ret = this.reducer(
         currentState,
         actionType,
         payload
-    ).then(function (newState){
+    );
+    _isPromise(ret, ERRORS.REDUCERS_RETURN);
+    this.previousAction = actionType;
+    return ret.then(function (newState){
         self.HistoryManager.commit(newState, autoPush)
         return newState;
     });
@@ -66,6 +81,7 @@ Store.prototype.subscribe = function (subscriber) {
 };
 
 Store.prototype.move = function (to) {
+    _isNumber(to, ERRORS.MOVE_TO_NUMBER)
     if (
         this.HistoryManager.index !== this.HistoryManager.unpushedIndex
         || typeof to === 'undefined'
