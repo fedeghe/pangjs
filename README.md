@@ -79,7 +79,7 @@ store.commit({
     - maxElements (default 1): 
         by default no history is available, but if here we pass a number bigger than one, for example 5 then we can navigate the state back up to 5 steps using the `move` function to the store.
     - check (default no check):
-        here we can pass a function expected to have to following signature:
+        here we can pass a synchrhonous function expected to have to following signature:
         ```
         (
             state, 
@@ -88,7 +88,7 @@ store.commit({
             payload
         ) -> <Boolean>
         ```
-        allowing to prevent a state change under some circumstances; that decision can be made based on the `state`, the ongoing `currentAction` which we might block, the `previousAction` and the current `payload`. To allow the change just return `true`, to block it return `false` instead.
+        allowing to prevent a state change under some circumstances; that decision can be made based on the `state`, the ongoing `currentAction` which we might block, the `previousAction` and the current `payload`. Only if we return `true`, the reducer action will be run.
 
 **Returns**:  
 the `store` instance  
@@ -99,6 +99,8 @@ the `store` instance
 ---
 
 ### `PANGjs.combine([reducer, ...])`
+
+Synchronous function to combine 2 or more reducers.
 
 **Parameters**:
 - **[reducer, ...]**:
@@ -122,4 +124,19 @@ Parameters:
 
 # store API
 
-Every store obtained invoking successfully `PANGjs.getStore` exposes the following
+Every store obtained invoking successfully `PANGjs.getStore` exposes the following (more details will come):
+
+### `storeInstance.getState() -> state (last pushed)`
+
+### `storeInstance.commit(action, autoPush) -> Promise resolved with new state (pushed or not)`
+
+### `storeInstance.push() -> Promise resolved with new pushed state`
+- calls subscribers 
+
+### `storeInstance.suubscribe(fn) -> unsubscribing function`
+
+### `storeInstance.replaceReducer(fn) -> store instance`
+
+### `storeInstance.move(int) -> store instance`
+
+### `storeInstance.reset() -> store instance`
