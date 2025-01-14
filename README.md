@@ -1,13 +1,13 @@
 # PANGjs (0.0.1)
 
-![alt text](./pangjs.png "Pang js")
+![alt text](https://github.com/fedeghe/pangjs/blob/main/pangjs.png?raw=true "Pang js")
 
 
 # Simple asynchronous state manager
 
 install it 
 ``` sh
-> npm install pangjs
+> npm install @fedeghe/pangjs
 ```
 
 All we need to do now is to:  
