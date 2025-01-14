@@ -1,4 +1,4 @@
-# PANGjs
+# PANGjs (0.0.1)
 
 ![alt text](./pangjs.png "Pang js")
 

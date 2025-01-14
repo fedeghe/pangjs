@@ -1,4 +1,4 @@
-# PANGjs
+# PANGjs ($PACKAGE.version$)
 
 ![alt text](./pangjs.png "Pang js")
 

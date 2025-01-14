@@ -1,8 +1,8 @@
 'use strict';
 /*
 PANGjs
-v. 1.0.0
-22:14:5
+v. 0.0.1
+7:57:24
 Size: ~3.63KB
 */
 var PANGjs=function(){"use strict";function t(t,e){if("function"!=typeof t)throw new Error(e)}function e(t,e){if("Promise"!==t.constructor.name)throw new Error(e)}function s(t,e){
