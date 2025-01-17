@@ -23,13 +23,16 @@ Store.prototype.getState = function (unpushed) {
 };
 
 Store.prototype.uncommit = function () {
+    if (this.HistoryManager.maxElements === 1){
+        return this;
+    }
     this.HistoryManager.unpushedIndex = this.HistoryManager.index;
     this.HistoryManager.unpuhedStates =  this.HistoryManager.states;
 };
 
 Store.prototype.commit = function (action, autoPush) {
     if (!('type' in action)) {
-        return Promise.reject(ERRORS.ACTION_TYPE);
+        return Promise.reject(new Error(ERRORS.ACTION_TYPE));
     }
 
     var self = this,
@@ -42,7 +45,7 @@ Store.prototype.commit = function (action, autoPush) {
         actionType,
         payload
     )) {
-        return Promise.reject(ERRORS.UNAUTHORIZED_STATECHANGE);
+        return Promise.reject(new Error(ERRORS.UNAUTHORIZED_STATECHANGE));
     }
     var ret = this.reducer(
         currentState,
@@ -84,24 +87,34 @@ Store.prototype.subscribe = function (subscriber) {
 Store.prototype.move = function (to) {
     _isNumber(to, ERRORS.MOVE_TO_NUMBER)
     if (
-        this.HistoryManager.index !== this.HistoryManager.unpushedIndex
+        // history is not active
+        this.HistoryManager.maxElements === 1
+        // unpushed changes
+        || this.HistoryManager.index !== this.HistoryManager.unpushedIndex
+        // or to is not consumable
         || typeof to === 'undefined'
         || to === 0
-    ) return this;
+    ) {
+        return this;
+    }
+    
     var tmpIndex = this.HistoryManager.index + to,
         willChange = tmpIndex > -1 && tmpIndex < this.HistoryManager.states.length,
-        newIndex = willChange ? tmpIndex : this.currentIndex;
-
+        newIndex = willChange ? tmpIndex : this.HistoryManager.index;
+    
     this.HistoryManager.index = newIndex;
     this.HistoryManager.unpushedIndex = newIndex;
     return this;
 };
 
-Store.prototype.replaceReducer = function (reducer) {
-    this.reducer = reducer || defaultReducer;
+Store.prototype.replaceReducer = function (r) {
+    _isFunction(r, ERRORS.SUBSCRIBERS_FUNCTION);
+    this.reducer = r;
+    return this;
 };
 
 Store.prototype.reset = function () {
     this.HistoryManager.reset();
     this.subscribers = [];
+    return this;
 };

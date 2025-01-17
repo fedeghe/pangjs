@@ -25,4 +25,10 @@ describe(`PANGjs - init`, () => {
         expect(storeInitialized.config).toMatchObject(conf);
         expect(storeInitialized.subscribers).toMatchObject([]);
     });
+    it('default values', async () => {
+        const { getStore } = PANGjs,
+            store = getStore();
+        await store.commit({ type: 'whatever' });
+        expect(store.getState()).toMatchObject({});
+    });
 });

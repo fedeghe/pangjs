@@ -1,12 +1,11 @@
 function HistoryManager (initState, config) {
-    this.states = [initState || {}];
-    this.unpushedStates = [initState || {}];
-    this.config = config || {};
-    this.maxElements = this.config.maxElements || false;
+    this.states = [initState];
+    this.unpushedStates = [initState];
+    this.config = config;
     this.maxElements = Math.max(
-        0,
-        parseInt(this.config.maxElements, 0)
-    ) || false;
+        1,
+        parseInt(this.config.maxElements, 10)
+    ) || 1;
     this.index = 0;
     this.unpushedIndex = 0;
 }
@@ -18,6 +17,7 @@ HistoryManager.prototype.top = function (unpushed) {
 }
 
 HistoryManager.prototype.commit = function(state, autoPush) {
+    // console.log(this.maxElements);
     var newStates = this.unpushedStates.slice(
         0,
         this.unpushedIndex + 1

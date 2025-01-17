@@ -1,11 +1,14 @@
 
 describe('PANGjs throw all expected exceptions', () => {
+    beforeAll(() => {
+        jest.clearAllMocks();
+    })
     it('action not given', done => {
         const { getStore } = PANGjs,
             red = () => Promise.resolve({}),
             store = getStore(red);
         store.commit({}).catch(e => {
-            expect(e).toBe('[ERROR] Actions needs a type')
+            expect(e.message).toBe('[ERROR] Actions needs a type!')
             done()
         })
     });
@@ -30,5 +33,33 @@ describe('PANGjs throw all expected exceptions', () => {
             expect(() => {
                 store.commit({type:'MULT'})
             }).toThrow('[ERROR] Reducer should return a promise!')
+    });
+    it('reducer must be a function', () => {
+        const { getStore } = PANGjs,
+            red = {};
+            
+            expect(() => {
+                getStore(red);
+            }).toThrow('[ERROR] Reducer must be a function!')
+    });
+
+    it('move param must be a number', () => {
+        const { getStore } = PANGjs,
+            red = getStore(() =>Promise.resolve({}), {}, {maxElements:5});
+            
+            expect(() => {
+                red.move('a');
+            }).toThrow('[ERROR] Move requires a number!')
+    });
+    it('unauth transition', done => {
+        const { getStore } = PANGjs,
+            store = getStore(() => Promise.resolve({}), {}, {
+                check: () => false
+            });
+
+            store.commit({type:'whatever'}).catch(e => {
+                expect(e.message).toBe('[ERROR] State transition not allowed!')
+                done()
+            })
     });
 });

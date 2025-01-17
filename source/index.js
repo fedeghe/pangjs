@@ -19,7 +19,6 @@ var PANGjs = (function () {
                 _isFunction(reducer, ERRORS.REDUCERS_FUNCTION);
             })
             return function (currentState, actionType, payload) {
-                currentState = currentState || initState;
                 var newState = Object.assign({}, currentState),
                     rlen = reducers.length;
 
@@ -27,7 +26,6 @@ var PANGjs = (function () {
                     
                     return reducers.reduce(function (acc, red, i) {
                         return acc.then(function (r) {
-                            // console.log({ r: r, actionType: actionType });
                             if(rlen - 1 === i){
                                 return resolve(
                                     red(r, actionType, payload)

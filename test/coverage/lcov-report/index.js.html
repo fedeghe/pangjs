@@ -23,23 +23,23 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.93% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>57/62</span>
+                <span class='fraction'>63/63</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.45% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>47/57</span>
+                <span class='fraction'>48/48</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.87% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>31/32</span>
+                <span class='fraction'>32/32</span>
             </div>
         
             
@@ -90,68 +90,71 @@
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
 <a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">57x</span>
-<span class="cline-any cline-yes">21x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">42x</span>
-<span class="cline-any cline-yes">24x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">20x</span>
+<span class="cline-any cline-yes">66x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">33x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 /*
 PANGjs
 v. 0.0.1
-7:57:24
-Size: ~3.63KB
+&nbsp;
+Size: ~3.72KB
 */
-var PANGjs=function(){"use strict";function t(t,e){<span class="missing-if-branch" title="if path not taken" >I</span>if("function"!=typeof t)<span class="cstat-no" title="statement not covered" >throw new Error(e)}</span>function e(t,e){if("Promise"!==t.constructor.name)throw new Error(e)}function s(t,e){
-<span class="missing-if-branch" title="if path not taken" >I</span>if("number"!=typeof t)<span class="cstat-no" title="statement not covered" >throw new Error(e)}</span>function n(t,e){this.states=[t||<span class="branch-1 cbranch-no" title="branch not covered" >{}]</span>,this.unpushedStates=[t||<span class="branch-1 cbranch-no" title="branch not covered" >{}]</span>,this.config=e||<span class="branch-1 cbranch-no" title="branch not covered" >{},</span>this.maxElements=this.config.maxElements||!1,
-this.maxElements=Math.max(0,parseInt(this.config.maxElements,0))||!1,this.index=0,this.unpushedIndex=0}function i(e,s,i){this.reducer=e||o,t(this.reducer,r.REDUCERS_FUNCTION),this.initState=s||{},
-this.config=i||{},this.config.check=this.config.check||function(){return!0},t(this.config.check,r.REDUCERS_FUNCTION),this.subscribers=[],this.previousAction="ORIGIN",
-this.HistoryManager=new n(this.initState,this.config)}var r={REDUCERS_FUNCTION:"[ERROR] Reducer must be a function!",REDUCERS_RETURN:"[ERROR] Reducer should return a promise!",
-REDUCERS_ASYNC:"[ERROR] Reducer should be asynchronous!",SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",ACTION_TYPE:"[ERROR] Actions needs a type",
-UNAUTHORIZED_STATECHANGE:"[ERROR] State transition not allowed",MOVE_TO_NUMBER:"[ERROR] Move requires a number"};n.prototype.top=function(t){
-return this[t?"unpushedStates":"states"][this[t?"unpushedIndex":"index"]]},n.prototype.commit=function(t,e){var s=this.unpushedStates.slice(0,this.unpushedIndex+1);return s.push(t),
-this.maxElements&amp;&amp;s.length&gt;this.maxElements?s.shift():this.unpushedIndex++,this.unpushedStates=s,e&amp;&amp;this.push(),this},n.prototype.push=function(){this.states=this.unpushedStates,
-this.index=this.unpushedIndex},n.prototype.reset=function(){this.index=0,this.states=this.states.slice(0,1),this.unpushedIndex=0,this.unpushedStates=this.unpushedStates.slice(0,1)};var o=function(){
-return Promise.resolve({})};return i.prototype.getState=function(t){return this.HistoryManager.top(t)},i.prototype.uncommit=function(){this.HistoryManager.unpushedIndex=this.HistoryManager.index,
-this.HistoryManager.unpuhedStates=this.HistoryManager.states},i.prototype.commit=function(t,s){if(!("type"in t))return Promise.reject(r.ACTION_TYPE)
-;var n=this,i=t.type,o=t.payload||{},u=this.getState(!0);<span class="missing-if-branch" title="if path not taken" >I</span>if(!n.config.check(u,n.previousAction,i,o))<span class="cstat-no" title="statement not covered" >return Promise.reject(r.UNAUTHORIZED_STATECHANGE);v</span>ar h=this.reducer(u,i,o)
+var PANGjs=function(){"use strict";function t(t,e){if("function"!=typeof t)throw new Error(e)}function e(t,e){if("Promise"!==t.constructor.name)throw new Error(e)}function s(t,e){
+if("number"!=typeof t)throw new Error(e)}function n(t,e){this.states=[t],this.unpushedStates=[t],this.config=e,this.maxElements=Math.max(1,parseInt(this.config.maxElements,10))||1,this.index=0,
+this.unpushedIndex=0}function i(e,s,i){this.reducer=e||o,t(this.reducer,r.REDUCERS_FUNCTION),this.initState=s||{},this.config=i||{},this.config.check=this.config.check||function(){return!0},
+t(this.config.check,r.REDUCERS_FUNCTION),this.subscribers=[],this.previousAction="ORIGIN",this.HistoryManager=new n(this.initState,this.config)}var r={
+REDUCERS_FUNCTION:"[ERROR] Reducer must be a function!",REDUCERS_RETURN:"[ERROR] Reducer should return a promise!",REDUCERS_ASYNC:"[ERROR] Reducer should be asynchronous!",
+SUBSCRIBERS_FUNCTION:"[ERROR] Subscribers must be a functions!",ACTION_TYPE:"[ERROR] Actions needs a type!",UNAUTHORIZED_STATECHANGE:"[ERROR] State transition not allowed!",
+MOVE_TO_NUMBER:"[ERROR] Move requires a number!"};n.prototype.top=function(t){return this[t?"unpushedStates":"states"][this[t?"unpushedIndex":"index"]]},n.prototype.commit=function(t,e){
+var s=this.unpushedStates.slice(0,this.unpushedIndex+1);return s.push(t),this.maxElements&amp;&amp;s.length&gt;this.maxElements?s.shift():this.unpushedIndex++,this.unpushedStates=s,e&amp;&amp;this.push(),this},
+n.prototype.push=function(){this.states=this.unpushedStates,this.index=this.unpushedIndex},n.prototype.reset=function(){this.index=0,this.states=this.states.slice(0,1),this.unpushedIndex=0,
+this.unpushedStates=this.unpushedStates.slice(0,1)};var o=function(){return Promise.resolve({})};return i.prototype.getState=function(t){return this.HistoryManager.top(t)},
+i.prototype.uncommit=function(){if(1===this.HistoryManager.maxElements)return this;this.HistoryManager.unpushedIndex=this.HistoryManager.index,
+this.HistoryManager.unpuhedStates=this.HistoryManager.states},i.prototype.commit=function(t,s){if(!("type"in t))return Promise.reject(new Error(r.ACTION_TYPE))
+;var n=this,i=t.type,o=t.payload||{},u=this.getState(!0);if(!n.config.check(u,n.previousAction,i,o))return Promise.reject(new Error(r.UNAUTHORIZED_STATECHANGE));var h=this.reducer(u,i,o)
 ;return e(h,r.REDUCERS_RETURN),this.previousAction=i,h.then(function(t){return n.HistoryManager.commit(t,s),t})},i.prototype.push=function(){this.HistoryManager.push();var t=this.HistoryManager.top()
 ;return this.subscribers.filter(function(t){return Boolean(t)}).forEach(function(e){e(t)}),Promise.resolve(t)},i.prototype.subscribe=function(e){t(e,r.SUBSCRIBERS_FUNCTION);var s,n=this
-;return this.subscribers.push(e),s=this.subscribers.length-1,<span class="fstat-no" title="function not covered" >fu</span>nction(){<span class="cstat-no" title="statement not covered" >n.subscribers[s]=null}</span>},i.prototype.move=function(t){<span class="missing-if-branch" title="if path not taken" >I</span>if(s(t,r.MOVE_TO_NUMBER),
-this.HistoryManager.index!==this.HistoryManager.unpushedIndex||void 0===t||0===t)<span class="cstat-no" title="statement not covered" >return this;v</span>ar e=this.HistoryManager.index+t,n=e&gt;-1&amp;&amp;e&lt;this.HistoryManager.states.length,i=n?e:<span class="branch-1 cbranch-no" title="branch not covered" >this.currentIndex</span>
-;return this.HistoryManager.index=i,this.HistoryManager.unpushedIndex=i,this},i.prototype.replaceReducer=function(t){this.reducer=t||<span class="branch-1 cbranch-no" title="branch not covered" >o}</span>,i.prototype.reset=function(){this.HistoryManager.reset(),
-this.subscribers=[]},{ERRORS:r,getStore:function(t,e,s){return new i(t,e,s)},isStore:function(t){return t instanceof i},combine:function(e){return e.forEach(function(e){t(e,r.REDUCERS_FUNCTION)}),
-function(t,s,n){t=t||<span class="branch-1 cbranch-no" title="branch not covered" >initState;</span>var i=Object.assign({},t),r=e.length;return new Promise(function(t){return e.reduce(function(e,i,o){return e.then(function(e){return r-1===o?t(i(e,s,n)):i(e,s,n)})
-},Promise.resolve(i))})}}}}();"object"==typeof exports&amp;&amp;(module.exports=PANGjs);</pre></td></tr></table></pre>
+;return this.subscribers.push(e),s=this.subscribers.length-1,function(){n.subscribers[s]=null}},i.prototype.move=function(t){if(s(t,r.MOVE_TO_NUMBER),
+1===this.HistoryManager.maxElements||this.HistoryManager.index!==this.HistoryManager.unpushedIndex||void 0===t||0===t)return this
+;var e=this.HistoryManager.index+t,n=e&gt;-1&amp;&amp;e&lt;this.HistoryManager.states.length,i=n?e:this.HistoryManager.index;return this.HistoryManager.index=i,this.HistoryManager.unpushedIndex=i,this},
+i.prototype.replaceReducer=function(e){return t(e,r.SUBSCRIBERS_FUNCTION),this.reducer=e,this},i.prototype.reset=function(){return this.HistoryManager.reset(),this.subscribers=[],this},{ERRORS:r,
+getStore:function(t,e,s){return new i(t,e,s)},isStore:function(t){return t instanceof i},combine:function(e){return e.forEach(function(e){t(e,r.REDUCERS_FUNCTION)}),function(t,s,n){
+var i=Object.assign({},t),r=e.length;return new Promise(function(t){return e.reduce(function(e,i,o){return e.then(function(e){return r-1===o?t(i(e,s,n)):i(e,s,n)})},Promise.resolve(i))})}}}}()
+;"object"==typeof exports&amp;&amp;(module.exports=PANGjs);</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-01-14T07:01:37.968Z
+                at 2025-01-17T17:57:52.458Z
             </div>
         <script src="prettify.js"></script>
         <script>

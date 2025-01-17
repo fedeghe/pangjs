@@ -1,14 +1,5 @@
 
-describe('PANGjs - store', () => {
-
-
-    it('default values', async () => {
-        const { getStore } = PANGjs,
-            store = getStore();
-        await store.commit({ type: 'whatever' });
-        expect(store.getState()).toMatchObject({});
-    });
-
+describe('PANGjs - async store', () => {
     it('works asynchronously as expected - promise/timeOut', async () => {
         const { getStore } = PANGjs,
             red = async (oldState, actionType, payload) => {
@@ -27,7 +18,7 @@ describe('PANGjs - store', () => {
                 }
                 return Promise.resolve(oldState)
             },
-            store = getStore(red, {n:0});
+            store = getStore(red, {n:0}, {maxElements:5});
         await store.commit({
             type: 'add',
             payload: { n: 2 }
@@ -54,7 +45,7 @@ describe('PANGjs - store', () => {
                     return oldState
                 }
             },
-            store = getStore(red, {n:0});
+            store = getStore(red, {n:0}, {maxElements:5});
         await store.commit({
             type: 'add',
             payload: { n: 2 }
