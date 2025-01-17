@@ -14,11 +14,10 @@ All we need to do now is to:
 - define an asynchronous reducer as:
     ``` js
     const reducer = async (oldState, action, payload) => {
-        const res = await fetch(targetUrl),
-            newstate = {
-                ...oldState,
-                // your updates
-            }
+        const res = await fetch(targetUrl);
+        //
+        // your updates 
+        // 
         return newState
     }
     ```
@@ -42,7 +41,7 @@ store.commit({
         'here we get the unpushed state:', s
     ));
 
-// to push the changes to be effective we have to push
+// for the changes to be effective we have to push
 store.push()
     // here we get the pushed state
     .then(console.log);

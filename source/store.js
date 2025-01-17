@@ -60,7 +60,8 @@ Store.prototype.commit = function (action, autoPush) {
     });
 };
 
-Store.prototype.push = function () {
+Store.prototype.push = function (action) {
+    if(action) return this.commit(action, true);
     this.HistoryManager.push();
     var newState = this.HistoryManager.top();
     this.subscribers.filter(function(filter) {

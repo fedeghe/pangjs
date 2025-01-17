@@ -2,6 +2,7 @@ const PANGjs = require('../dist');
 
 maltaF('./init.js');
 
+maltaF('./store.push.js');
 maltaF('./store.commitAutopush.js');
 maltaF('./store.uncommit.js');
 maltaF('./store.combine.js');
