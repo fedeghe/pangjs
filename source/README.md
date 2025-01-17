@@ -57,6 +57,16 @@ store.commit({
     .then(console.log);
 ```
 
+alternatively it is possible to directly push the action:
+``` js
+store.push({
+    type: 'ADD',
+    payload: { number: 4 }},
+)
+// here we get the state
+.then(console.log);
+```
+
 ---
 
 # API

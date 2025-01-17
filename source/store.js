@@ -23,7 +23,7 @@ Store.prototype.getState = function (unpushed) {
 };
 
 Store.prototype.uncommit = function () {
-    if (this.HistoryManager.maxElements === 1){
+    if (this.HistoryManager.maxElements === 1) {
         return this;
     }
     this.HistoryManager.unpushedIndex = this.HistoryManager.index;
@@ -34,7 +34,6 @@ Store.prototype.commit = function (action, autoPush) {
     if (!('type' in action)) {
         return Promise.reject(new Error(ERRORS.ACTION_TYPE));
     }
-
     var self = this,
         actionType = action.type,
         payload = action.payload || {},
@@ -55,8 +54,17 @@ Store.prototype.commit = function (action, autoPush) {
     _isPromise(ret, ERRORS.REDUCERS_RETURN);
     this.previousAction = actionType;
     return ret.then(function (newState){
-        self.HistoryManager.commit(newState, autoPush)
+        self.HistoryManager.commit(newState, autoPush);
+        if(autoPush) self.emit(newState);
         return newState;
+    });
+};
+
+Store.prototype.emit = function (newState) {
+    this.subscribers.filter(function(filter) {
+        return Boolean(filter);
+    }).forEach(function (subscriber) {
+        subscriber(newState);
     });
 };
 
@@ -64,11 +72,7 @@ Store.prototype.push = function (action) {
     if(action) return this.commit(action, true);
     this.HistoryManager.push();
     var newState = this.HistoryManager.top();
-    this.subscribers.filter(function(filter) {
-        return Boolean(filter);
-    }).forEach(function (subscriber) {
-        subscriber(newState);
-    });
+    this.emit(newState);
     return Promise.resolve(newState);
 };
 
@@ -102,7 +106,6 @@ Store.prototype.move = function (to) {
     var tmpIndex = this.HistoryManager.index + to,
         willChange = tmpIndex > -1 && tmpIndex < this.HistoryManager.states.length,
         newIndex = willChange ? tmpIndex : this.HistoryManager.index;
-    
     this.HistoryManager.index = newIndex;
     this.HistoryManager.unpushedIndex = newIndex;
     return this;
