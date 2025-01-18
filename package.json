@@ -9,8 +9,8 @@
     "dev": "malta source/buildev.json",
     "test": "jest --coverage --rootDir=test",
     "watch": "jest --watch --coverage --rootDir=test",
-    "cover": "jest --coverage --rootDir=test",
-    "coveralls": "jest --coverage --rootDir=test | coveralls"
+    "cover": "jest --coverage --rootDir=test  --coverageReporters=text",
+    "coveralls": "jest --coverage --rootDir=test --coverageReporters=text && cat ./coverage/lcov.info | coveralls"
   },
   "devDependencies": {
     "coveralls": "^3.1.1",
@@ -25,5 +25,13 @@
     "malta-header-comment": "^1.0.12",
     "malta-js-uglify": "^1.0.13",
     "nyc": "^17.1.0"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "html"
+    ]
   }
 }
