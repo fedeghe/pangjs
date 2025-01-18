@@ -1,4 +1,4 @@
-# PANGjs (0.0.4)
+# PANGjs (0.0.5)
 
 ![alt text](https://github.com/fedeghe/pangjs/blob/main/pangjs.png?raw=true "Pang js")
 
