@@ -9,7 +9,8 @@ var PANGjs = (function () {
     return {
         ERRORS: ERRORS,
         getStore: function (reducer, initState, config) {
-            return new Store(reducer, initState, config);
+            var newStore =  new Store(reducer, initState, config);
+            return newStore;
         },
         isStore: function (s) {
             return s instanceof Store;

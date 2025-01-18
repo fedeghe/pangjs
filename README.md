@@ -26,20 +26,17 @@ All we need to do now is to:
 now it's time to get a store and use it:
 
 
-``` js
-const store = PANGjs.getStore(
-    reducer,
-    initState
-);
+``` js  
+const store = PANGjs.getStore( reducer, initState );
 
 // commit, change it only internally
 store.commit({
-        type: 'ADD',
-        payload: { number: 4 }
-    })
-    .then(s => console.log(
-        'here we get the unpushed state:', s
-    ));
+    type: 'ADD',
+    payload: { number: 4 }
+})
+.then(s => console.log(
+    'here we get the unpushed state:', s
+));
 
 // for the changes to be effective we have to push
 store.push()
@@ -49,12 +46,10 @@ store.push()
 alternatively one single call just adding `true` as second parameter (semantically is 'autocommit'): 
 ``` js
 store.commit({
-        type: 'ADD',
-        payload: { number: 4 }},
-        true // autoCommit changes
-    )
-    // here we get autopushed state
-    .then(console.log);
+    type: 'ADD',
+    payload: { number: 4 }
+}, true /* autocommit */) 
+.then(console.log); // here we get autopushed state
 ```
 
 alternatively it is possible to directly push the action:
@@ -63,8 +58,7 @@ store.push({
     type: 'ADD',
     payload: { number: 4 }},
 )
-// here we get the state
-.then(console.log);
+.then(console.log); // here we get the state
 ```
 
 ---
@@ -125,27 +119,62 @@ the resulting combined reducer
 
 ### `PANGjs.isStore(toBeChecked)`
 
-Parameters: 
+**Parameters**: 
 - **toBeChecked**:
     what needs to be checked if it is a PANGjs store or not
 
 ---
 
-# store API
+# store
 
-Every store obtained invoking successfully `PANGjs.getStore` exposes the following (more details will come):
+Every store obtained invoking successfully `PANGjs.getStore` exposes the following:
 
-### `storeInstance.getState() -> state (last pushed)`
+### `storeInstance.getState() -> state`
 
-### `storeInstance.commit(action, autoPush) -> Promise resolved with new state (pushed or not)`
+returns the last pushed state
 
-### `storeInstance.push() -> Promise resolved with new pushed state`
-- calls subscribers 
+### `storeInstance.commit(action, autoPush) -> Promise`
 
-### `storeInstance.suubscribe(fn) -> unsubscribing function`
+commit or commit&push returning a promise resolving with new state (pushed or not); 
+
+**Parameters**: 
+- **action**:
+    ```js
+    {
+        type: <String>,
+        payload: <Object>
+    }
+    ```
+- autoPush `<Boolean>` default `false`
+
+
+
+### `storeInstance.push() -> Promise`
+push all the committed but unpushed changes.  
+Only this operations calls subscribers.  
+
+Optionally it can recieve an action and that will be equivalent to commit and push:  
+`s.commit(action).then(() => s.push())`  
+act as
+`s.commit(action, true)`  
+and as
+`s.push(action))`
+
+
+### `storeInstance.subscribe(fn) -> unsubscribing function`
+
+allows to register a subscribing function that will be invoked everytime the state changes (pushed)  
+
+**returns**:  the unsubscribing function
 
 ### `storeInstance.replaceReducer(fn) -> store instance`
 
+replace the store reducer
+
 ### `storeInstance.move(int) -> store instance`
 
+in case the history is active allows to move in the states
+
 ### `storeInstance.reset() -> store instance`
+
+reset the store to its initial state

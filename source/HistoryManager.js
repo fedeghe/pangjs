@@ -1,4 +1,5 @@
 function HistoryManager (initState, config) {
+    this.initState = initState;
     this.states = [initState];
     this.unpushedStates = [initState];
     this.config = config;
@@ -40,7 +41,7 @@ HistoryManager.prototype.push = function () {
 
 HistoryManager.prototype.reset = function () {
     this.index = 0;
-    this.states = this.states.slice(0, 1);
+    this.states = [this.initState];
     this.unpushedIndex = 0;
     this.unpushedStates = this.unpushedStates.slice(0, 1);
 };
