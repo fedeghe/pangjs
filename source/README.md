@@ -29,16 +29,15 @@ const store = PANGjs.getStore( reducer, initState );
 
 // stage the results only internally
 store.stage({
-    type: 'ADD',
-    payload: { number: 4 }
-})
-.then(s => console.log(
-    'here we get the unpushed state:', s
-));
+        type: 'ADD',
+        payload: { number: 4 }
+    })
+    // here we get staged state
+    .then(console.log);
 
 // make all staged changes effective
 store.dispatch()
-    // here we get the pushed state
+    // here we get the state
     .then(console.log);
 ```
 alternatively one single call just adding `true` as second parameter also dispatch: 
@@ -47,10 +46,10 @@ store.stage({
     type: 'ADD',
     payload: { number: 4 }
 }, true /* autoDispatch */) 
-.then(console.log); // here we get autopushed state
+.then(console.log); // here we get the  state
 ```
 
-alternatively it is possible to directly push the action:
+alternatively it is possible to directly dispatch the action:
 ``` js
 store.dispatch({
     type: 'ADD',
@@ -129,9 +128,9 @@ Every store obtained invoking successfully `PANGjs.getStore` exposes the followi
 
 ### `storeInstance.getState() -> state`
 
-returns the last pushed state
+returns the state
 
-### `storeInstance.stage(action, autoPush) -> Promise`
+### `storeInstance.stage(action, autoDispatch) -> Promise`
 
 stage or stage&dispatch returning a promise resolving with new state (staged or not); 
 
@@ -143,7 +142,7 @@ stage or stage&dispatch returning a promise resolving with new state (staged or 
         payload: <Object>
     }
     ```
-- autoPush `<Boolean>` default `false`
+- autoDispatch `<Boolean>` default `false`
 
 
 
@@ -161,7 +160,7 @@ and as
 
 ### `storeInstance.subscribe(fn) -> unsubscribing function`
 
-allows to register a subscribing function that will be invoked everytime the state changes (pushed)  
+allows to register a subscribing function that will be invoked everytime the state changes (dispatched)  
 
 **returns**:  the unsubscribing function
 
