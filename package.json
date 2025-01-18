@@ -1,8 +1,19 @@
 {
   "name": "@fedeghe/pangjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "dist/index.js",
   "author": "fedeghe <fedeghe@gmail.com>",
+  "description": "Lightweight asynchronous state manager",
+  "keywords": [
+    "asynchronous state manager",
+    "async state manager",
+    "state manager",
+    "async"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fedeghe/pangjs.git"
+  },
   "license": "MIT",
   "scripts": {
     "build": "malta source/build.json",
