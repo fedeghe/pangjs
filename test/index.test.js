@@ -20,7 +20,7 @@ describe(`PANGjs - init`, () => {
 
         expect(PANGjs.isStore(store)).toBeTruthy();
         expect(typeof store.getState).toBe('function');
-        expect(typeof store.commit).toBe('function');
+        expect(typeof store.stage).toBe('function');
         expect(store.reducer).toBe(red);
         expect(store.initState).toMatchObject({});
         expect(store.config).toMatchObject({});
@@ -33,7 +33,7 @@ describe(`PANGjs - init`, () => {
     it('default values', async () => {
         const { getStore } = PANGjs,
             store = getStore();
-        await store.commit({ type: 'whatever' });
+        await store.stage({ type: 'whatever' });
         expect(store.getState()).toMatchObject({});
     });
 });
@@ -56,11 +56,11 @@ describe('PANGjs - store.push', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         },)
-        await store.push()
+        await store.dispatch()
         const s = store.getState();
         expect(s.n).toBe(2)
     });
@@ -76,7 +76,7 @@ describe('PANGjs - store.push', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.push({
+        await store.dispatch({
             type: 'add',
             payload: { n: 2 }
         },)
@@ -88,7 +88,7 @@ describe('PANGjs - store.push', () => {
 [Malta] ./store.commitAutopush.js
 */
 
-describe('PANGjs - store.commit autopush', () => {
+describe('PANGjs - store.stage autoDispatch', () => {
     it('works as expected', async () => {
         const { getStore } = PANGjs,
             red = (oldState, actionType, payload) => {
@@ -101,11 +101,11 @@ describe('PANGjs - store.commit autopush', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
-        await store.commit({
+        await store.stage({
                 type: 'add',
                 payload: { n: 3 }
         }, true)
@@ -132,13 +132,13 @@ describe('PANGjs - store.uncommit', () => {
             conf = {maxElements: 5},
             store = getStore(red, init, conf);
         // commit & push`
-        await store.commit({ type: 'add', payload: {n : 2} }, true)
+        await store.stage({ type: 'add', payload: {n : 2} }, true)
         expect(store.getState()).toMatchObject({ n: 71 });
-        // just commit
-        await store.commit({ type: 'add', payload: {n : 3} });
+        // just stage
+        await store.stage({ type: 'add', payload: {n : 3} });
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 74 });
-        store.uncommit();
+        store.unstage();
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 71 });
     });
@@ -155,14 +155,14 @@ describe('PANGjs - store.uncommit', () => {
             init = { n: 69 },
             conf = {},
             store = getStore(red, init, conf);
-        // commit & push`
-        await store.commit({ type: 'add', payload: {n : 2} }, true)
+        // stage & dipatch`
+        await store.stage({ type: 'add', payload: {n : 2} }, true)
         expect(store.getState()).toMatchObject({ n: 71 });
-        // just commit
-        await store.commit({ type: 'add', payload: {n : 3} });
+        // just stage
+        await store.stage({ type: 'add', payload: {n : 3} });
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 74 });
-        store.uncommit();
+        store.unstage();
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 74 });
     });
@@ -210,19 +210,20 @@ describe('PANGjs - store.combine', () => {
             )
         ),
         combined = combine([reducer1, reducer2]);
+
     it('works as expected', async () => {
         const store = getStore(combined, { number: 0 });
         
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { num: 7 }
         })
         
-        await store.commit({
+        await store.stage({
             type: 'subtract',
             payload: { num: 2 }
         })
-        store.push();
+        store.dispatch();
         const r = store.getState()
         expect(r.number).toBe(5)
     });
@@ -253,12 +254,12 @@ describe('PANGjs - store.move', () => {
                 { n: 0 },
                 { maxElements: 3 }
             );
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         })
         
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 3 }
         }, true);
@@ -269,7 +270,7 @@ describe('PANGjs - store.move', () => {
         expect(store.getState()).toMatchObject({ n: 0 });
         store.move(1);
         expect(store.getState()).toMatchObject({ n: 2 });
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 9 }
         }, true);
@@ -289,21 +290,21 @@ describe('PANGjs - store.move', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, {maxElements:10});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         });
         // this is too early, nothing happenz
         store.move(-2);
         expect(store.HistoryManager.states.length).toBe(1);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 0 });
 
-        store.push();
+        store.dispatch();
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 2 });
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 9 }
         }, true);
@@ -327,21 +328,21 @@ describe('PANGjs - store.move', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, {maxElements:10});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         });
         // this is too early, nothing happenz
         store.move(1);
         expect(store.HistoryManager.states.length).toBe(1);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
-        store.push();
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
+        store.dispatch();
         // no changes, nothing ahead
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         store.move(1);
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 2 });
     });
 
@@ -357,21 +358,21 @@ describe('PANGjs - store.move', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, {maxElements:10});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         });
         // this is too early, nothing happenz
         store.move(-3);
         expect(store.HistoryManager.states.length).toBe(1);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
-        store.push();
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
+        store.dispatch();
         // no changes, nothing ahead
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         store.move(-3);
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 2 });
     });
     
@@ -394,7 +395,7 @@ describe('PANGjs - store.reset', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, { maxElements: 2 });
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
@@ -430,7 +431,7 @@ describe('PANGjs - store.replaceReducer', () => {
             },
             store = getStore(red, {n:0});
 
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 5 }
         }, true)
@@ -438,7 +439,7 @@ describe('PANGjs - store.replaceReducer', () => {
         expect(store.getState()).toMatchObject({ n: 5 });
         
         store.replaceReducer(red2)
-        await store.commit({
+        await store.stage({
             type: 'sub',
             payload: { n: 2 }
         },true)    
@@ -471,12 +472,12 @@ describe('PANGjs - store.subscribe', () => {
             store = getStore(red, init, conf);
         
         const unsubscriber = store.subscribe(() => doDone());
-        await store.commit({ type: 'add', payload: {n : 2} })
-            .then((o) => store.commit({ type: 'aaa' }))
-            .then((o) => store.commit({ type: 'bbb' }))
-            .then((o) => store.push());
+        await store.stage({ type: 'add', payload: {n : 2} })
+            .then((o) => store.stage({ type: 'aaa' }))
+            .then((o) => store.stage({ type: 'bbb' }))
+            .then((o) => store.dispatch());
         unsubscriber();
-        await store.commit({type: 'add'}, { payload: 42 }).then(
+        await store.stage({type: 'add'}, { payload: 42 }).then(
             () => {
                 expect(count).toBe(0);
             }
@@ -509,7 +510,7 @@ describe('PANGjs - async store', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0}, {maxElements:5});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
@@ -536,7 +537,7 @@ describe('PANGjs - async store', () => {
                 }
             },
             store = getStore(red, {n:0}, {maxElements:5});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
@@ -565,14 +566,14 @@ describe('PANGjs - store historyManager', () => {
             store = getStore(red, {n:2}, {
                 maxElements: 3
             });
-        await store.commit({ type: 'mult', payload: { n: 3 }}); // => 6
-        await store.commit({ type: 'mult', payload: { n: 5 }}); // => 30
-        await store.commit({ type: 'mult', payload: { n: 7 }}); // => 210
-        await store.commit({ type: 'mult', payload: { n: 11 }}, true); // => 2310
+        await store.stage({ type: 'mult', payload: { n: 3 }}); // => 6
+        await store.stage({ type: 'mult', payload: { n: 5 }}); // => 30
+        await store.stage({ type: 'mult', payload: { n: 7 }}); // => 210
+        await store.stage({ type: 'mult', payload: { n: 11 }}, true); // => 2310
         
         expect(store.HistoryManager.states.length).toBe(3);
         expect(store.getState()).toMatchObject({ n: 2310 });
-        await store.commit({ type: 'mult', payload: { n: 0.5 }}, true);
+        await store.stage({ type: 'mult', payload: { n: 0.5 }}, true);
         expect(store.getState()).toMatchObject({ n: 1155 });
         expect(store.HistoryManager.states.length).toBe(3);
 
@@ -590,7 +591,7 @@ describe('PANGjs throw all expected exceptions', () => {
         const { getStore } = PANGjs,
             red = () => Promise.resolve({}),
             store = getStore(red);
-        store.commit({}).catch(e => {
+        store.stage({}).catch(e => {
             expect(e.message).toBe('[ERROR] Actions needs a type!')
             done()
         })
@@ -603,7 +604,7 @@ describe('PANGjs throw all expected exceptions', () => {
                     : Promise.reject('no action found'),
             store = getStore(red);
         
-        store.commit({type:'MULT'}).catch(e => {
+        store.stage({type:'MULT'}).catch(e => {
             expect(e).toBe('no action found')
             done()
         })
@@ -614,7 +615,7 @@ describe('PANGjs throw all expected exceptions', () => {
             store = getStore(red);
 
             expect(() => {
-                store.commit({type:'MULT'})
+                store.stage({type:'MULT'})
             }).toThrow('[ERROR] Reducer should return a promise!')
     });
     it('reducer must be a function', () => {
@@ -640,7 +641,7 @@ describe('PANGjs throw all expected exceptions', () => {
                 check: () => false
             });
 
-            store.commit({type:'whatever'}).catch(e => {
+            store.stage({type:'whatever'}).catch(e => {
                 expect(e.message).toBe('[ERROR] State transition not allowed!')
                 done()
             })

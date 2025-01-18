@@ -15,7 +15,7 @@ describe(`PANGjs - init`, () => {
 
         expect(PANGjs.isStore(store)).toBeTruthy();
         expect(typeof store.getState).toBe('function');
-        expect(typeof store.commit).toBe('function');
+        expect(typeof store.stage).toBe('function');
         expect(store.reducer).toBe(red);
         expect(store.initState).toMatchObject({});
         expect(store.config).toMatchObject({});
@@ -28,7 +28,7 @@ describe(`PANGjs - init`, () => {
     it('default values', async () => {
         const { getStore } = PANGjs,
             store = getStore();
-        await store.commit({ type: 'whatever' });
+        await store.stage({ type: 'whatever' });
         expect(store.getState()).toMatchObject({});
     });
 });

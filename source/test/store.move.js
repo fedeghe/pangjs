@@ -16,12 +16,12 @@ describe('PANGjs - store.move', () => {
                 { n: 0 },
                 { maxElements: 3 }
             );
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         })
         
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 3 }
         }, true);
@@ -32,7 +32,7 @@ describe('PANGjs - store.move', () => {
         expect(store.getState()).toMatchObject({ n: 0 });
         store.move(1);
         expect(store.getState()).toMatchObject({ n: 2 });
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 9 }
         }, true);
@@ -52,21 +52,21 @@ describe('PANGjs - store.move', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, {maxElements:10});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         });
         // this is too early, nothing happenz
         store.move(-2);
         expect(store.HistoryManager.states.length).toBe(1);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 0 });
 
-        store.push();
+        store.dispatch();
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 2 });
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 9 }
         }, true);
@@ -90,21 +90,21 @@ describe('PANGjs - store.move', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, {maxElements:10});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         });
         // this is too early, nothing happenz
         store.move(1);
         expect(store.HistoryManager.states.length).toBe(1);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
-        store.push();
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
+        store.dispatch();
         // no changes, nothing ahead
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         store.move(1);
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 2 });
     });
 
@@ -120,21 +120,21 @@ describe('PANGjs - store.move', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 }, {maxElements:10});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         });
         // this is too early, nothing happenz
         store.move(-3);
         expect(store.HistoryManager.states.length).toBe(1);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
-        store.push();
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
+        store.dispatch();
         // no changes, nothing ahead
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         store.move(-3);
         expect(store.HistoryManager.states.length).toBe(2);
-        expect(store.HistoryManager.unpushedStates.length).toBe(2);
+        expect(store.HistoryManager.stagedStates.length).toBe(2);
         expect(store.getState()).toMatchObject({ n: 2 });
     });
     

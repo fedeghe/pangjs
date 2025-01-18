@@ -1,5 +1,5 @@
 
-describe('PANGjs - store.commit autopush', () => {
+describe('PANGjs - store.stage autoDispatch', () => {
     it('works as expected', async () => {
         const { getStore } = PANGjs,
             red = (oldState, actionType, payload) => {
@@ -12,11 +12,11 @@ describe('PANGjs - store.commit autopush', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
-        await store.commit({
+        await store.stage({
                 type: 'add',
                 payload: { n: 3 }
         }, true)

@@ -19,7 +19,7 @@ describe('PANGjs - async store', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0}, {maxElements:5});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
@@ -46,7 +46,7 @@ describe('PANGjs - async store', () => {
                 }
             },
             store = getStore(red, {n:0}, {maxElements:5});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)

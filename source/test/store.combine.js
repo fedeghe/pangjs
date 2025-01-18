@@ -37,19 +37,20 @@ describe('PANGjs - store.combine', () => {
             )
         ),
         combined = combine([reducer1, reducer2]);
+
     it('works as expected', async () => {
         const store = getStore(combined, { number: 0 });
         
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { num: 7 }
         })
         
-        await store.commit({
+        await store.stage({
             type: 'subtract',
             payload: { num: 2 }
         })
-        store.push();
+        store.dispatch();
         const r = store.getState()
         expect(r.number).toBe(5)
     });

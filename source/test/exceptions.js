@@ -7,7 +7,7 @@ describe('PANGjs throw all expected exceptions', () => {
         const { getStore } = PANGjs,
             red = () => Promise.resolve({}),
             store = getStore(red);
-        store.commit({}).catch(e => {
+        store.stage({}).catch(e => {
             expect(e.message).toBe('[ERROR] Actions needs a type!')
             done()
         })
@@ -20,7 +20,7 @@ describe('PANGjs throw all expected exceptions', () => {
                     : Promise.reject('no action found'),
             store = getStore(red);
         
-        store.commit({type:'MULT'}).catch(e => {
+        store.stage({type:'MULT'}).catch(e => {
             expect(e).toBe('no action found')
             done()
         })
@@ -31,7 +31,7 @@ describe('PANGjs throw all expected exceptions', () => {
             store = getStore(red);
 
             expect(() => {
-                store.commit({type:'MULT'})
+                store.stage({type:'MULT'})
             }).toThrow('[ERROR] Reducer should return a promise!')
     });
     it('reducer must be a function', () => {
@@ -57,7 +57,7 @@ describe('PANGjs throw all expected exceptions', () => {
                 check: () => false
             });
 
-            store.commit({type:'whatever'}).catch(e => {
+            store.stage({type:'whatever'}).catch(e => {
                 expect(e.message).toBe('[ERROR] State transition not allowed!')
                 done()
             })

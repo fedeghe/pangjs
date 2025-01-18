@@ -12,11 +12,11 @@ describe('PANGjs - store.push', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 2 }
         },)
-        await store.push()
+        await store.dispatch()
         const s = store.getState();
         expect(s.n).toBe(2)
     });
@@ -32,7 +32,7 @@ describe('PANGjs - store.push', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, {n:0});
-        await store.push({
+        await store.dispatch({
             type: 'add',
             payload: { n: 2 }
         },)

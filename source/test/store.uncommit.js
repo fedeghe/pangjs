@@ -14,13 +14,13 @@ describe('PANGjs - store.uncommit', () => {
             conf = {maxElements: 5},
             store = getStore(red, init, conf);
         // commit & push`
-        await store.commit({ type: 'add', payload: {n : 2} }, true)
+        await store.stage({ type: 'add', payload: {n : 2} }, true)
         expect(store.getState()).toMatchObject({ n: 71 });
-        // just commit
-        await store.commit({ type: 'add', payload: {n : 3} });
+        // just stage
+        await store.stage({ type: 'add', payload: {n : 3} });
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 74 });
-        store.uncommit();
+        store.unstage();
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 71 });
     });
@@ -37,14 +37,14 @@ describe('PANGjs - store.uncommit', () => {
             init = { n: 69 },
             conf = {},
             store = getStore(red, init, conf);
-        // commit & push`
-        await store.commit({ type: 'add', payload: {n : 2} }, true)
+        // stage & dipatch`
+        await store.stage({ type: 'add', payload: {n : 2} }, true)
         expect(store.getState()).toMatchObject({ n: 71 });
-        // just commit
-        await store.commit({ type: 'add', payload: {n : 3} });
+        // just stage
+        await store.stage({ type: 'add', payload: {n : 3} });
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 74 });
-        store.uncommit();
+        store.unstage();
         expect(store.getState()).toMatchObject({ n: 71 });
         expect(store.getState(true)).toMatchObject({ n: 74 });
     });

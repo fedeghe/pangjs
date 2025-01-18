@@ -22,7 +22,7 @@ describe('PANGjs - store.replaceReducer', () => {
             },
             store = getStore(red, {n:0});
 
-        await store.commit({
+        await store.stage({
             type: 'add',
             payload: { n: 5 }
         }, true)
@@ -30,7 +30,7 @@ describe('PANGjs - store.replaceReducer', () => {
         expect(store.getState()).toMatchObject({ n: 5 });
         
         store.replaceReducer(red2)
-        await store.commit({
+        await store.stage({
             type: 'sub',
             payload: { n: 2 }
         },true)    

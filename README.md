@@ -10,28 +10,25 @@ install it
 ``` sh
 > npm install @fedeghe/pangjs
 ```
+define an asynchronous reducer as:  
 
-All we need to do now is to:  
-- define an asynchronous reducer as:
-    ``` js
-    const reducer = async (oldState, action, payload) => {
-        const res = await fetch(targetUrl);
-        //
-        // your updates 
-        // 
-        return newState
-    }
-    ```
-
-
-now it's time to get a store and use it:
-
+``` js
+const reducer = async (oldState, action, payload) => {
+    const res = await fetch(targetUrl);
+    //
+    // your updates 
+    // 
+    return newState
+}
+```
+get a store and use it:
 
 ``` js  
+const PANGjs = require('@fedeghe/pangjs')
 const store = PANGjs.getStore( reducer, initState );
 
-// commit, change it only internally
-store.commit({
+// stage the results only internally
+store.stage({
     type: 'ADD',
     payload: { number: 4 }
 })
@@ -39,23 +36,23 @@ store.commit({
     'here we get the unpushed state:', s
 ));
 
-// for the changes to be effective we have to push
-store.push()
+// make all staged changes effective
+store.dispatch()
     // here we get the pushed state
     .then(console.log);
 ```
-alternatively one single call just adding `true` as second parameter (semantically is 'autocommit'): 
+alternatively one single call just adding `true` as second parameter also dispatch: 
 ``` js
-store.commit({
+store.stage({
     type: 'ADD',
     payload: { number: 4 }
-}, true /* autocommit */) 
+}, true /* autoDispatch */) 
 .then(console.log); // here we get autopushed state
 ```
 
 alternatively it is possible to directly push the action:
 ``` js
-store.push({
+store.dispatch({
     type: 'ADD',
     payload: { number: 4 }},
 )
@@ -134,9 +131,9 @@ Every store obtained invoking successfully `PANGjs.getStore` exposes the followi
 
 returns the last pushed state
 
-### `storeInstance.commit(action, autoPush) -> Promise`
+### `storeInstance.stage(action, autoPush) -> Promise`
 
-commit or commit&push returning a promise resolving with new state (pushed or not); 
+stage or stage&dispatch returning a promise resolving with new state (staged or not); 
 
 **Parameters**: 
 - **action**:
@@ -150,16 +147,16 @@ commit or commit&push returning a promise resolving with new state (pushed or no
 
 
 
-### `storeInstance.push() -> Promise`
-push all the committed but unpushed changes.  
+### `storeInstance.dispatch() -> Promise`
+dispatch all the staged changes.  
 Only this operations calls subscribers.  
 
-Optionally it can recieve an action and that will be equivalent to commit and push:  
-`s.commit(action).then(() => s.push())`  
+Optionally it can recieve an action and that will be equivalent to stage and dispatch:  
+`s.stage(action).then(() => s.dispatch())`  
 act as
-`s.commit(action, true)`  
+`s.stage(action, true)`  
 and as
-`s.push(action))`
+`s.dispatch(action))`
 
 
 ### `storeInstance.subscribe(fn) -> unsubscribing function`

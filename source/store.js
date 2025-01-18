@@ -18,19 +18,19 @@ function Store(reducer, initState, config) {
     );
 };
 
-Store.prototype.getState = function (unpushed) {
-    return this.HistoryManager.top(unpushed);
+Store.prototype.getState = function (staged) {
+    return this.HistoryManager.top(staged);
 };
 
-Store.prototype.uncommit = function () {
+Store.prototype.unstage = function () {
     if (this.HistoryManager.maxElements === 1) {
         return this;
     }
-    this.HistoryManager.unpushedIndex = this.HistoryManager.index;
-    this.HistoryManager.unpuhedStates =  this.HistoryManager.states;
+    this.HistoryManager.stagedIndex = this.HistoryManager.index;
+    this.HistoryManager.stagedStates =  this.HistoryManager.states;
 };
 
-Store.prototype.commit = function (action, autoPush) {
+Store.prototype.stage = function (action, autoDispatch) {
     if (!('type' in action)) {
         return Promise.reject(new Error(ERRORS.ACTION_TYPE));
     }
@@ -54,8 +54,8 @@ Store.prototype.commit = function (action, autoPush) {
     _isPromise(ret, ERRORS.REDUCERS_RETURN);
     this.previousAction = actionType;
     return ret.then(function (newState){
-        self.HistoryManager.commit(newState, autoPush);
-        if(autoPush) self.emit(newState);
+        self.HistoryManager.stage(newState, autoDispatch);
+        if(autoDispatch) self.emit(newState);
         return newState;
     });
 };
@@ -68,9 +68,9 @@ Store.prototype.emit = function (newState) {
     });
 };
 
-Store.prototype.push = function (action) {
-    if(action) return this.commit(action, true);
-    this.HistoryManager.push();
+Store.prototype.dispatch = function (action) {
+    if(action) return this.stage(action, true);
+    this.HistoryManager.sync();
     var newState = this.HistoryManager.top();
     this.emit(newState);
     return Promise.resolve(newState);
@@ -95,7 +95,7 @@ Store.prototype.move = function (to) {
         // history is not active
         this.HistoryManager.maxElements === 1
         // unpushed changes
-        || this.HistoryManager.index !== this.HistoryManager.unpushedIndex
+        || this.HistoryManager.index !== this.HistoryManager.stagedIndex
         // or to is not consumable
         || typeof to === 'undefined'
         || to === 0
@@ -107,7 +107,7 @@ Store.prototype.move = function (to) {
         willChange = tmpIndex > -1 && tmpIndex < this.HistoryManager.states.length,
         newIndex = willChange ? tmpIndex : this.HistoryManager.index;
     this.HistoryManager.index = newIndex;
-    this.HistoryManager.unpushedIndex = newIndex;
+    this.HistoryManager.stagedIndex = newIndex;
     return this;
 };
 

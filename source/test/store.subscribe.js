@@ -20,12 +20,12 @@ describe('PANGjs - store.subscribe', () => {
             store = getStore(red, init, conf);
         
         const unsubscriber = store.subscribe(() => doDone());
-        await store.commit({ type: 'add', payload: {n : 2} })
-            .then((o) => store.commit({ type: 'aaa' }))
-            .then((o) => store.commit({ type: 'bbb' }))
-            .then((o) => store.push());
+        await store.stage({ type: 'add', payload: {n : 2} })
+            .then((o) => store.stage({ type: 'aaa' }))
+            .then((o) => store.stage({ type: 'bbb' }))
+            .then((o) => store.dispatch());
         unsubscriber();
-        await store.commit({type: 'add'}, { payload: 42 }).then(
+        await store.stage({type: 'add'}, { payload: 42 }).then(
             () => {
                 expect(count).toBe(0);
             }
