@@ -1,7 +1,7 @@
 'use strict';
 /*
 PANGjs
-v. 0.0.1
+v. 0.0.2
 
 Size: ~3.82KB
 */
