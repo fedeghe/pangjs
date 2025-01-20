@@ -2,6 +2,15 @@ var defaultReducer = function(){
     return Promise.resolve({})
 };
 
+function emit(newState) {
+    this.subscribers.filter(function(filter) {
+        return Boolean(filter);
+    }).forEach(function (subscriber) {
+        subscriber(newState);
+    });
+};
+
+
 function Store(reducer, initState, config) {
     this.reducer = reducer || defaultReducer;
     _isFunction(this.reducer, ERRORS.REDUCERS_FUNCTION);
@@ -55,16 +64,8 @@ Store.prototype.stage = function (action, autoDispatch) {
     this.previousAction = actionType;
     return ret.then(function (newState){
         self.HistoryManager.stage(newState, autoDispatch);
-        if(autoDispatch) self.emit(newState);
+        if(autoDispatch) emit.call(self, newState);
         return newState;
-    });
-};
-
-Store.prototype.emit = function (newState) {
-    this.subscribers.filter(function(filter) {
-        return Boolean(filter);
-    }).forEach(function (subscriber) {
-        subscriber(newState);
     });
 };
 
@@ -72,7 +73,7 @@ Store.prototype.dispatch = function (action) {
     if(action) return this.stage(action, true);
     this.HistoryManager.sync();
     var newState = this.HistoryManager.top();
-    this.emit(newState);
+    emit.call(this, newState);
     return Promise.resolve(newState);
 };
 
@@ -119,6 +120,6 @@ Store.prototype.replaceReducer = function (r) {
 
 Store.prototype.reset = function () {
     this.HistoryManager.reset();
-    this.emit(this.initState);
+    emit.call(this, this.initState);
     return this;
 };
