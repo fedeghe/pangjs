@@ -43,5 +43,5 @@ HistoryManager.prototype.reset = function () {
     this.index = 0;
     this.states = [this.initState];
     this.stagedIndex = 0;
-    this.stagedStates = this.stagedStates.slice(0, 1);
+    this.stagedStates = [this.initState];
 };

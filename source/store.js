@@ -119,6 +119,6 @@ Store.prototype.replaceReducer = function (r) {
 
 Store.prototype.reset = function () {
     this.HistoryManager.reset();
-    this.subscribers = [];
+    this.emit(this.initState);
     return this;
 };
