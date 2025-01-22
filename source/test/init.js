@@ -19,11 +19,11 @@ describe(`PANGjs - init`, () => {
         expect(store.reducer).toBe(red);
         expect(store.initState).toMatchObject({});
         expect(store.config).toMatchObject({});
-        expect(store.subscribers).toMatchObject([]);
+        // expect(store.subscribers).toMatchObject([]);
 
         expect(storeInitialized.initState).toMatchObject(init);
         expect(storeInitialized.config).toMatchObject(conf);
-        expect(storeInitialized.subscribers).toMatchObject([]);
+        // expect(storeInitialized.subscribers).toMatchObject([]);
     });
     it('default values', async () => {
         const { getStore } = PANGjs,

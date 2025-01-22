@@ -38,6 +38,7 @@ describe('PANGjs - store.reset', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 });
+        
         store.dispatch({
             type: 'add',
             payload: { n: 2 }
@@ -48,6 +49,7 @@ describe('PANGjs - store.reset', () => {
                 expect(s).toMatchObject({ n: 0 });
                 done();
             });
+            
             store.reset();
         })
         

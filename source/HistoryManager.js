@@ -2,6 +2,7 @@ function HistoryManager (initState, config) {
     this.initState = initState;
     this.states = [initState];
     this.stagedStates = [initState];
+    this.subscribers = [];
     this.config = config;
     this.maxElements = Math.max(
         1,
@@ -17,6 +18,18 @@ HistoryManager.prototype.top = function (staged) {
     ];
 };
 
+HistoryManager.prototype.subscribe = function (subscriber) {
+    _isFunction(subscriber, ERRORS.SUBSCRIBERS_FUNCTION);
+    var self = this,
+        p;
+    this.subscribers.push(subscriber);
+    p = this.subscribers.length - 1;
+
+    // unsubcriber
+    return function () {
+        self.subscribers[p] = null;
+    };
+};
 HistoryManager.prototype.stage = function(state, autoDispatch) {
     var newStates = this.stagedStates.slice(
         0,
@@ -29,14 +42,21 @@ HistoryManager.prototype.stage = function(state, autoDispatch) {
     } else {
         this.stagedIndex++;
     }
-    this.stagedStates = newStates;
+    this.stagedStates = Array.from(newStates);
     if (autoDispatch) this.sync();
     return this;
 };
 
 HistoryManager.prototype.sync = function () {
-    this.states = this.stagedStates;
+    this.states = Array.from(this.stagedStates);
     this.index = this.stagedIndex;
+};
+HistoryManager.prototype.emit = function (newState) {
+    this.subscribers.filter(function(filter) {
+        return Boolean(filter);
+    }).forEach(function (subscriber) {
+        subscriber(newState);
+    });
 };
 
 HistoryManager.prototype.reset = function () {

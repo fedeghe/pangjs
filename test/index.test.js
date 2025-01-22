@@ -24,11 +24,11 @@ describe(`PANGjs - init`, () => {
         expect(store.reducer).toBe(red);
         expect(store.initState).toMatchObject({});
         expect(store.config).toMatchObject({});
-        expect(store.subscribers).toMatchObject([]);
+        // expect(store.subscribers).toMatchObject([]);
 
         expect(storeInitialized.initState).toMatchObject(init);
         expect(storeInitialized.config).toMatchObject(conf);
-        expect(storeInitialized.subscribers).toMatchObject([]);
+        // expect(storeInitialized.subscribers).toMatchObject([]);
     });
     it('default values', async () => {
         const { getStore } = PANGjs,
@@ -40,11 +40,11 @@ describe(`PANGjs - init`, () => {
 ;
 
 /*
-[Malta] ./store.push.js
+[Malta] ./store.dispatch.js
 */
 
-describe('PANGjs - store.push', () => {
-    it('commit then push', async () => {
+describe('PANGjs - store.dispatch', () => {
+    it('stage then dispatch', async () => {
         const { getStore } = PANGjs,
             red = (oldState, actionType, payload) => {
                 if(actionType==='add'){
@@ -64,7 +64,7 @@ describe('PANGjs - store.push', () => {
         const s = store.getState();
         expect(s.n).toBe(2)
     });
-    it('straigth push', async () => {
+    it('straigth dispatch', async () => {
         const { getStore } = PANGjs,
             red = (oldState, actionType, payload) => {
                 if(actionType==='add'){
@@ -79,9 +79,79 @@ describe('PANGjs - store.push', () => {
         await store.dispatch({
             type: 'add',
             payload: { n: 2 }
-        },)
+        })
         const s = store.getState();
         expect(s.n).toBe(2)
+    });
+    it('stage dispatch, stage dispatch, no history', async () => {
+        const { getStore } = PANGjs,
+            red = (oldState, actionType, payload) => {
+                if(actionType==='add'){
+                    return Promise.resolve({
+                        ...oldState,
+                        n: oldState.n + (payload.n || 1)
+                    })
+                }
+                return Promise.resolve(oldState)
+            },
+            store = getStore(red, {n:0});
+        await store.stage({
+            type: 'add',
+            payload: { n: 2 }
+        })
+        await store.dispatch()
+        await store.stage({
+            type: 'add',
+            payload: { n: 2 }
+        })
+        await store.dispatch()
+        await store.dispatch()
+        const s = store.getState();
+        expect(s.n).toBe(4)
+        await store.stage({
+            type: 'add',
+            payload: { n: 2 }
+        },true)
+        const s2 = store.getState();
+        expect(s2.n).toBe(6)
+        store.reset();
+        const s3 = store.getState();
+        expect(s3.n).toBe(0)
+    });
+    it('stage dispatch, stage dispatch, with history', async () => {
+        const { getStore } = PANGjs,
+            red = (oldState, actionType, payload) => {
+                if(actionType==='add'){
+                    return Promise.resolve({
+                        ...oldState,
+                        n: oldState.n + (payload.n || 1)
+                    })
+                }
+                return Promise.resolve(oldState)
+            },
+            store = getStore(red, {n:0}, {maxElements:100});
+        await store.stage({
+            type: 'add',
+            payload: { n: 2 }
+        })
+        await store.dispatch()
+        await store.stage({
+            type: 'add',
+            payload: { n: 2 }
+        })
+        await store.dispatch()
+        await store.dispatch()
+        const s = store.getState();
+        expect(s.n).toBe(4)
+        await store.stage({
+            type: 'add',
+            payload: { n: 2 }
+        },true)
+        const s2 = store.getState();
+        expect(s2.n).toBe(6)
+        store.reset();
+        const s3 = store.getState();
+        expect(s3.n).toBe(0)
     });
 });;
 /*
@@ -420,6 +490,7 @@ describe('PANGjs - store.reset', () => {
                 return Promise.resolve(oldState)
             },
             store = getStore(red, { n: 0 });
+        
         store.dispatch({
             type: 'add',
             payload: { n: 2 }
@@ -430,6 +501,7 @@ describe('PANGjs - store.reset', () => {
                 expect(s).toMatchObject({ n: 0 });
                 done();
             });
+            
             store.reset();
         })
         
@@ -552,8 +624,12 @@ describe('PANGjs - async store', () => {
     it('works asynchronously as expected - fetch', async () => {
         const { getStore } = PANGjs,
             red = async (oldState, actionType, payload) => {
+                if(actionType === 'add')return {
+                    ...oldState,
+                    n: oldState.n + payload.n
+                }
                 // the will fails, but still we explit the httpstatus code ;) 
-                const url = "https://example.org/products.json";
+                const url = "https://jmvc.org/app/jmvc.jsz";
                 try {
                     const response = await fetch(url);
                     if (!response.ok) {
@@ -568,11 +644,12 @@ describe('PANGjs - async store', () => {
                 }
             },
             store = getStore(red, {n:0}, {maxElements:5});
+        await store.stage({type:'none'})
         await store.stage({
             type: 'add',
             payload: { n: 2 }
         }, true)
-        expect(store.getState()).toMatchObject({ n: 404 });
+        expect(store.getState()).toMatchObject({ n: 406 });
         store.reset()
         expect(store.getState()).toMatchObject({ n: 0 }); 
     });

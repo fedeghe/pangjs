@@ -2,24 +2,13 @@ var defaultReducer = function(){
     return Promise.resolve({})
 };
 
-function emit(newState) {
-    this.subscribers.filter(function(filter) {
-        return Boolean(filter);
-    }).forEach(function (subscriber) {
-        subscriber(newState);
-    });
-};
-
-
 function Store(reducer, initState, config) {
     this.reducer = reducer || defaultReducer;
     _isFunction(this.reducer, ERRORS.REDUCERS_FUNCTION);
-    // _isAsync(this.reducer, ERRORS.REDUCERS_ASYNC);
     this.initState = initState || {};
     this.config = config || {};
     this.config.check = this.config.check || function (){return true};
     _isFunction(this.config.check, ERRORS.REDUCERS_FUNCTION);
-    this.subscribers = [];
     this.previousAction = 'ORIGIN';
     this.HistoryManager = new HistoryManager(
         this.initState,
@@ -64,7 +53,9 @@ Store.prototype.stage = function (action, autoDispatch) {
     this.previousAction = actionType;
     return ret.then(function (newState){
         self.HistoryManager.stage(newState, autoDispatch);
-        if(autoDispatch) emit.call(self, newState);
+        if(autoDispatch) {
+            self.HistoryManager.emit(newState);
+        }
         return newState;
     });
 };
@@ -72,23 +63,15 @@ Store.prototype.stage = function (action, autoDispatch) {
 Store.prototype.dispatch = function (action) {
     if(action) return this.stage(action, true);
     this.HistoryManager.sync();
-    var newState = this.HistoryManager.top();
-    emit.call(this, newState);
+
+    var newState = this.HistoryManager.top(true);
+    this.HistoryManager.emit(newState);
     return Promise.resolve(newState);
 };
 
-Store.prototype.subscribe = function (subscriber) {
-    _isFunction(subscriber, ERRORS.SUBSCRIBERS_FUNCTION);
-    var self = this,
-        p;
-    this.subscribers.push(subscriber);
-    p = this.subscribers.length - 1;
-
-    // unsubcriber
-    return function () {
-        self.subscribers[p] = null;
-    };
-};
+Store.prototype.subscribe = function (fn) {
+    return this.HistoryManager.subscribe(fn);
+}
 
 Store.prototype.move = function (to) {
     _isNumber(to, ERRORS.MOVE_TO_NUMBER)
@@ -119,7 +102,7 @@ Store.prototype.replaceReducer = function (r) {
 };
 
 Store.prototype.reset = function () {
+    this.HistoryManager.emit(this.initState);
     this.HistoryManager.reset();
-    emit.call(this, this.initState);
     return this;
 };
