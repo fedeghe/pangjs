@@ -9,7 +9,7 @@ function Store(reducer, initState, config) {
     this.config = config || {};
     this.config.check = this.config.check || function (){return true};
     _isFunction(this.config.check, ERRORS.REDUCERS_FUNCTION);
-    this.previousAction = 'ORIGIN';
+    this.previousAction = 'pIG-pANG';
     this.HistoryManager = new HistoryManager(
         this.initState,
         this.config
@@ -61,7 +61,7 @@ Store.prototype.stage = function (action, autoDispatch) {
 };
 
 Store.prototype.dispatch = function (action) {
-    if(action) return this.stage(action, true);
+    if (action) return this.stage(action, true);
     this.HistoryManager.sync();
 
     var newState = this.HistoryManager.top(true);
