@@ -1,6 +1,6 @@
 {
   "name": "@fedeghe/pangjs",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "dist/index.js",
   "author": "fedeghe <fedeghe@gmail.com>",
   "description": "Lightweight asynchronous state manager",
