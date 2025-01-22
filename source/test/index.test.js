@@ -4,7 +4,7 @@ maltaF('./init.js');
 
 maltaF('./store.dispatch.js');
 maltaF('./store.commitAutopush.js');
-maltaF('./store.uncommit.js');
+maltaF('./store.unstage.js');
 maltaF('./store.combine.js');
 maltaF('./store.move.js');
 maltaF('./store.reset.js');

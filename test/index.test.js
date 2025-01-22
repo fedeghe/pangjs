@@ -184,7 +184,7 @@ describe('PANGjs - store.stage autoDispatch', () => {
     });
 });;
 /*
-[Malta] ./store.uncommit.js
+[Malta] ./store.unstage.js
 */
 
 describe('PANGjs - store.uncommit', () => {
