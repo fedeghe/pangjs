@@ -1,6 +1,6 @@
 {
   "name": "@fedeghe/pangjs",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "main": "dist/index.js",
   "author": "fedeghe <fedeghe@gmail.com>",
   "description": "Lightweight asynchronous state manager",
@@ -28,13 +28,5 @@
     "malta": "^4.1.41",
     "malta-header-comment": "^1.0.12",
     "malta-js-uglify": "^1.0.13"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "coverageReporters": [
-      "json",
-      "lcov",
-      "html"
-    ]
   }
 }
