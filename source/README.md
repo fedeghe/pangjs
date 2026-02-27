@@ -2,7 +2,7 @@
 
 ![alt text](https://github.com/fedeghe/pangjs/blob/main/pangjs.png?raw=true "Pang js")
 
-[![Coverage Status](https://coveralls.io/repos/github/fedeghe/pangjs/badge.svg?branch=main)](https://coveralls.io/github/fedeghe/pangjs?branch=main)
+[![codecov](https://codecov.io/gh/fedeghe/pangjs/graph/badge.svg?token=2VQ632MML1)](https://codecov.io/gh/fedeghe/pangjs)
 
 # Simple asynchronous state manager
 
